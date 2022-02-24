@@ -1,3 +1,0 @@
-/home/ken/Coding/Udacity_C++_Nanodegree/CppND-Capstone-Game/build/CMakeFiles/rebuild_cache.dir
-/home/ken/Coding/Udacity_C++_Nanodegree/CppND-Capstone-Game/build/CMakeFiles/edit_cache.dir
-/home/ken/Coding/Udacity_C++_Nanodegree/CppND-Capstone-Game/build/CMakeFiles/Blasteroids.dir
