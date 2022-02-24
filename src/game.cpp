@@ -2,6 +2,8 @@
 #include <iostream>
 #include "SDL.h"
 
+
+
 Game::Game(std::size_t grid_width, std::size_t grid_height)
     : snake(grid_width, grid_height),
       engine(dev()),
@@ -19,13 +21,17 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+
+
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, snake);
     Update();
+    std::cout << "Calling renderer.Render()..." << std::endl;
     renderer.Render(snake, food);
+    std::cout << "Back from renderer.Render()..." << std::endl;
 
     frame_end = SDL_GetTicks();
 
