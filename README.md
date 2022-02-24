@@ -1,12 +1,10 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Capstone Game: Blasteroids
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is my Capstone project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). This was build upon starter code provided by the course, which was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
 <img src="snake_game.gif"/>
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
-
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+The Capstone Project gives us a chance to integrate what we've learned throughout this program.  In this project, we could built our own C++ application or extend the Snake game example, following the principles we have learned throughout this Nanodegree Program. This project demonstrates our ability to independently create applications using a wide range of C++ features.
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
@@ -20,7 +18,7 @@ In this project, you can build your own C++ application or extend this Snake gam
   >Note that for Linux, an `apt` or `apt-get` installation is preferred to building from source.
 * SDL2_gfx >= 1.0.4+dfsg-3
   * to install on linux:  sudo apt install libsdl2-gfx-dev
-  * you will need to add a cmake file called FindSDL2_gfx.cmake to your cmake directory, here is one that has worked for me: [https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake) 
+  * you will need to add a cmake file called FindSDL2_gfx.cmake to your cmake directory, the one that is included in this repo was found at [https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake)
   * in CMakeLists.txt, add a new `find_package(SDL2_gfx REQUIRED)`
   * also in CMakeLists.txt add `${SDL2_GFX_LIBRARIES}` to your target_link_libraries
 * gcc/g++ >= 5.4
@@ -33,7 +31,7 @@ In this project, you can build your own C++ application or extend this Snake gam
 1. Clone this repo.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./SnakeGame`.
+4. Run it: `./Blasteroids`.
 
 
 ## CC Attribution-ShareAlike 4.0 International
