@@ -1,6 +1,6 @@
 # CPPND: Capstone Game: Blasteroids
 
-This is my Capstone project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). This was built upon starter code provided by the course, which was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). This was built upon starter code provided by the course, which was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
 <img src="snake_game.gif"/>
 
@@ -18,9 +18,10 @@ This is my Capstone project for the [Udacity C++ Nanodegree Program](https://www
   >Note that for Linux, an `apt` or `apt-get` installation is preferred to building from source.
 * SDL2_gfx >= 1.0.4+dfsg-3
   * to install on linux:  sudo apt install libsdl2-gfx-dev
-  * you will need to add a cmake file called FindSDL2_gfx.cmake to your cmake directory, the one that is included in this repo was found at [https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake)
-  * in CMakeLists.txt, add a new `find_package(SDL2_gfx REQUIRED)`
-  * also in CMakeLists.txt add `${SDL2_GFX_LIBRARIES}` to your target_link_libraries
+  * If you are building your own cmake/make instead of using the one provided, you will also need to do the following:
+    * Add a cmake file called FindSDL2_gfx.cmake to your cmake directory, the one that is included in this repo was found at [https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake)
+    * In CMakeLists.txt, add a new `find_package(SDL2_gfx REQUIRED)`
+    * Also in CMakeLists.txt add `${SDL2_GFX_LIBRARIES}` to your target_link_libraries
 * gcc/g++ >= 5.4
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)

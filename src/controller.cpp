@@ -1,15 +1,16 @@
 #include "controller.h"
 #include <iostream>
 #include "SDL.h"
-#include "snake.h"
+#include "Settings.h"
 
-void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
-                                 Snake::Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1) snake.direction = input;
-  return;
+using namespace Settings;
+
+void Controller::ChangeDirection(std::shared_ptr<Ship> &ship, Ship::Direction input) const {
+  if (input == Ship::Direction::kLeft) ship->ChangeRotation(-1 * kShipRotationSpeed);
+  if (input == Ship::Direction::kRight) ship->ChangeRotation(1 * kShipRotationSpeed);
 }
 
-void Controller::HandleInput(bool &running, Snake &snake) const {
+void Controller::HandleInput(bool &running, std::shared_ptr<Ship> &ship, std::vector<std::shared_ptr<Shot>> &shots) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -17,23 +18,20 @@ void Controller::HandleInput(bool &running, Snake &snake) const {
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
-          ChangeDirection(snake, Snake::Direction::kUp,
-                          Snake::Direction::kDown);
-          break;
-
-        case SDLK_DOWN:
-          ChangeDirection(snake, Snake::Direction::kDown,
-                          Snake::Direction::kUp);
           break;
 
         case SDLK_LEFT:
-          ChangeDirection(snake, Snake::Direction::kLeft,
-                          Snake::Direction::kRight);
+          ChangeDirection(ship, Ship::Direction::kLeft);
           break;
 
         case SDLK_RIGHT:
-          ChangeDirection(snake, Snake::Direction::kRight,
-                          Snake::Direction::kLeft);
+          ChangeDirection(ship, Ship::Direction::kRight);
+          break;
+
+        case SDLK_SPACE:
+          shots.emplace_back(std::make_shared<Shot>(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation()));
+          std::cout << "Ship rotation is: " << ship->GetRotation() << std::endl;
+          std::cout << "Shot direction is: " << shots.back()->GetDirection() << std::endl;
           break;
       }
     }

@@ -2,11 +2,15 @@
 #define GAME_H
 
 #include <random>
+#include <vector>
+#include <memory>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
-#include "snake.h"
 #include "Ship.h"
+#include "Shot.h"
+#include "Asteroid.h"
+#include "Settings.h"
 
 class Game {
  public:
@@ -17,9 +21,10 @@ class Game {
   int GetSize() const;
 
  private:
-  Snake snake;
-  Ship ship;
   SDL_Point food;
+  std::shared_ptr<Ship> ship;
+  std::vector<std::shared_ptr<Shot>> shots;
+  std::vector<std::shared_ptr<Asteroid>> asteroids;
 
   std::random_device dev;
   std::mt19937 engine;
