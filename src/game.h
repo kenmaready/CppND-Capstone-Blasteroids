@@ -12,6 +12,11 @@
 #include "Asteroid.h"
 #include "Settings.h"
 
+// some conveneint aliases:
+typedef std::vector<std::shared_ptr<Asteroid>> AsteroidVector;
+typedef std::vector<std::shared_ptr<Shot>> ShotVector;
+
+
 class Game {
  public:
   Game(std::size_t grid_width, std::size_t grid_height);
@@ -23,8 +28,8 @@ class Game {
  private:
   SDL_Point food;
   std::shared_ptr<Ship> ship;
-  std::vector<std::shared_ptr<Shot>> shots;
-  std::vector<std::shared_ptr<Asteroid>> asteroids;
+  ShotVector shots;
+  AsteroidVector asteroids;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -33,8 +38,9 @@ class Game {
 
   int score{0};
 
-  void PlaceFood();
   void Update();
+  void InitializeAsteroids();
+  void InitializeShotVector();
 };
 
 #endif

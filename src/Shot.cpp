@@ -5,7 +5,9 @@ double radians2(double num) {
 }
 
 void Shot::Draw(SDL_Renderer *ren) {
-    filledCircleRGBA(ren, this->_x, this->_y, 3, 255, 255, 255, 255);
+    if (_active == true) {
+        filledCircleRGBA(ren, this->_x, this->_y, 3, 255, 255, 255, 255);
+    }
 }
 
 void Shot::Update() {
@@ -17,10 +19,15 @@ void Shot::Update() {
     double rotatedY = tempX * std::sin(radians2(_direction)) + tempY * std::cos(radians2(_direction));
 
     this->_x += rotatedX;
-    if (this->_x > kScreenWidth) this->_x -= kScreenWidth;
-    if (this->_x < 0) this->_x += kScreenWidth;
+    if ((this->_x > kScreenWidth) | (this->_x < 0)) Deactivate();
 
     this->_y += rotatedY;
-    if (this->_y > kScreenHeight) this->_y -= kScreenHeight;
-    if (this->_y < 0) this->_y += kScreenHeight;
+    if ((this->_y > kScreenHeight) | (this->_y < 0)) Deactivate();
+}
+
+void Shot::Activate(double x, double y, int direction) {
+    this->_x = x;
+    this->_y = y;
+    this->_direction = direction - 135;
+    this->_active = true;
 }

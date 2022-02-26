@@ -17,6 +17,7 @@ namespace Settings {
 
     const int kShipRotationSpeed(10);
     const int kShotSpeed(10);
+    const int kNumShots(128);
 
 };
 

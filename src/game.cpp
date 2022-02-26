@@ -8,11 +8,9 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) {
-  // Generate set of Asteroids:
-  for (int i = 0; i < kNumAsteroids ; i++) {
-    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>();
-    asteroids.emplace_back(std::move(asteroid));
-  }
+
+  InitializeAsteroids();
+  InitializeShotVector();
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -65,6 +63,26 @@ void Game::Update() {
   ship->Update();
 
   for (auto &shot: shots) {
-    shot->Update();
+    if (shot->IsActive()) shot->Update();
+  }
+}
+
+void Game::InitializeAsteroids() {
+  for (size_t i = 0; i < kNumAsteroids ; i++) {
+    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>();
+    asteroids.emplace_back(std::move(asteroid));
+  }
+}
+
+void Game::InitializeShotVector() {
+  // Generating fector of Inactive shots
+  // will be activated as needed
+
+  // Based on "object pooling" concept as described in Daniel_1985's
+  // answer to this damgedev.stackexchange post:
+  // https://gamedev.stackexchange.com/questions/175651/c-object-management-deletion
+  for (size_t i = 0; i < kNumShots; i++) {
+    std::shared_ptr<Shot> shot = std::make_shared<Shot>(0, 0, 0, false);
+    shots.emplace_back(std::move(shot));
   }
 }
