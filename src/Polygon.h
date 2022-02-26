@@ -15,6 +15,13 @@ class Point {
         double x, y;
 };
 
+struct Boundaries {
+    int top;
+    int bottom;
+    int left;
+    int right;
+};
+
 class Polygon {
     protected:
         std::vector<Point> _vertices;
@@ -23,6 +30,7 @@ class Polygon {
         int _rotation;
         int _direction;
         int _speed;
+        Boundaries boundaries;
         SDL_Color _color = {.r = 255, .g = 255, .b = 255, .a = 255 };
 
     public:
@@ -42,6 +50,7 @@ class Polygon {
         void rotate();
         void ChangeDirection(int change);
         void ChangeRotation(int change);
+        bool IsColliding(Polygon &other);
 };
 
 

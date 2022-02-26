@@ -6,13 +6,27 @@ using namespace Settings;
 
 #define ASTEROID_POINTS 6;
 
-Asteroid::Asteroid() {
-    // genrate the verteices for the asteroid object:
+int getSizeFactor(Asteroid::Size size) {
+    switch (size) {
+        case Asteroid::Size::kLarge:
+            return 3;
+        case Asteroid::Size::kMedium:
+            return 2;
+        default:
+            return 1;
+    }
+}
+
+Asteroid::Asteroid(Asteroid::Size size) {
+
+    int sizeFactor = getSizeFactor(size);
+
+    // generate the verteices for the asteroid object:
     std::vector<Point> vertices;
-    vertices.push_back(Point(0, 20));
-    vertices.push_back(Point(20, 0));
-    vertices.push_back(Point(0, -20));
-    vertices.push_back(Point(-20, 0));
+    vertices.push_back(Point(0, 20 * sizeFactor));
+    vertices.push_back(Point(20 * sizeFactor, 0));
+    vertices.push_back(Point(0, -20 * sizeFactor));
+    vertices.push_back(Point(-20 * sizeFactor, 0));
     this->_vertices = std::move(vertices);
 
     // set up random generators:
@@ -41,6 +55,26 @@ Asteroid::Asteroid() {
     std::cout << "New Asteroid will be centered at (" << centerX << ", " << centerY << ")..." << std::endl;
 }
 
-// void Asteroid::draw() {
-//     std::cout << "Drawing Asteroid with center at (" << this->_center.x << ", " << this->_center.y << ")..." << std::endl;
-// }
+
+Asteroid::Asteroid(Point center, int direction, Asteroid::Size size) {
+    
+    int sizeFactor = getSizeFactor(size);
+
+    // genrate the vertices for the asteroid object:
+    std::vector<Point> vertices;
+    vertices.push_back(Point(0, 20 * sizeFactor));
+    vertices.push_back(Point(20 * sizeFactor, 0));
+    vertices.push_back(Point(0, -20 * sizeFactor));
+    vertices.push_back(Point(-20 * sizeFactor, 0));
+    this->_vertices = std::move(vertices);
+
+    this->_center = center;
+    this->_direction = direction;
+    this->_speed = kAsteroidSpeed;
+
+        // set up random generator for random rotation:
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_int_distribution<int> distrRotation(0, 360);
+    this->_rotation = distrRotation(eng);
+}

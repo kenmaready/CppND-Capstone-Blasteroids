@@ -6,7 +6,10 @@
 
 class Asteroid : public Polygon {
     public:
-        Asteroid();
+        enum class Size { kSmall, kMedium, kLarge };
+
+        Asteroid(Asteroid::Size size);
+        Asteroid(Point center, int direction, Asteroid::Size size);
 };
 
 #endif

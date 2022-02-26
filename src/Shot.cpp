@@ -4,9 +4,19 @@ double radians2(double num) {
     return num * (M_PI / 180);
 }
 
+Shot::Shot(double x, double y, int direction, bool active): _x(x), _y(y), _direction(direction - 135), _active(active) {
+        Init();
+}
+
+
 void Shot::Draw(SDL_Renderer *ren) {
     if (_active == true) {
-        filledCircleRGBA(ren, this->_x, this->_y, 3, 255, 255, 255, 255);
+        filledCircleRGBA(ren, this->_x, this->_y, kShotRadius, _color.r, _color.g, _color.b, _color.a);
+
+        this->boundaries.top = this->_y - kShotRadius;
+        this->boundaries.bottom = this->_y + kShotRadius;
+        this->boundaries.left = this->_x - kShotRadius;
+        this->boundaries.right = this->_x + kShotRadius;
     }
 }
 
@@ -26,8 +36,20 @@ void Shot::Update() {
 }
 
 void Shot::Activate(double x, double y, int direction) {
+    this->Init();
+    
     this->_x = x;
     this->_y = y;
     this->_direction = direction - 135;
+
     this->_active = true;
+}
+
+void::Shot::Init() {
+    this->_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
+
+    this->boundaries.top = this->_y - kShotRadius;
+    this->boundaries.bottom = this->_y + kShotRadius;
+    this->boundaries.left = this->_x - kShotRadius;
+    this->boundaries.right = this->_x + kShotRadius;
 }

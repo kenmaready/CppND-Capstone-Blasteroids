@@ -4,11 +4,12 @@
 #include <cmath>
 #include "SDL.h"
 #include "SDL2_gfxPrimitives.h"
+#include "Polygon.h"
 #include "Settings.h"
 
 using namespace Settings;
 
-class Shot {
+class Shot : public Polygon {
     private:
         double _x;
         double _y;
@@ -17,7 +18,7 @@ class Shot {
         bool _active;
 
     public:
-        Shot(double x, double y, int direction, bool active=true): _x(x), _y(y), _direction(direction - 135), _active(active) {}
+        Shot(double x, double y, int direction, bool active=true);
         void Draw(SDL_Renderer *ren);
         void Update();
 
@@ -26,6 +27,7 @@ class Shot {
         void Activate() { _active = true; }
         void Activate(double x, double y, int direction);
         void Deactivate() { _active = false; }
+        void Init();
 };
 
 #endif

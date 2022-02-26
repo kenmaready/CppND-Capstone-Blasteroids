@@ -65,11 +65,21 @@ void Game::Update() {
   for (auto &shot: shots) {
     if (shot->IsActive()) shot->Update();
   }
+
+  for (auto &asteroid : asteroids) {
+    for (auto &shot: shots) {
+      if (shot->IsActive() && shot->IsColliding(*asteroid)) {
+        std::cout << "Collision Detected between shot and asteroid!" << std::endl;
+        shot->Deactivate();
+      }
+    }
+  }
+
 }
 
 void Game::InitializeAsteroids() {
   for (size_t i = 0; i < kNumAsteroids ; i++) {
-    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>();
+    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>(Asteroid::Size::kLarge);
     asteroids.emplace_back(std::move(asteroid));
   }
 }
