@@ -71,6 +71,7 @@ void Game::Update() {
       if (shot->IsActive() && shot->IsColliding(*asteroid)) {
         std::cout << "Collision Detected between shot and asteroid!" << std::endl;
         shot->Deactivate();
+        HandleAsteroidBlast(asteroid);
       }
     }
   }
@@ -95,4 +96,8 @@ void Game::InitializeShotVector() {
     std::shared_ptr<Shot> shot = std::make_shared<Shot>(0, 0, 0, false);
     shots.emplace_back(std::move(shot));
   }
+}
+
+void Game::HandleAsteroidBlast(std::shared_ptr<Asteroid> asteroid) {
+    
 }

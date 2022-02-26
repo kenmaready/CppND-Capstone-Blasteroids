@@ -41,6 +41,7 @@ class Game {
   void Update();
   void InitializeAsteroids();
   void InitializeShotVector();
+  void HandleAsteroidBlast(std::shared_ptr<Asteroid> asteroid);
 };
 
 #endif

@@ -10,6 +10,10 @@ class Asteroid : public Polygon {
 
         Asteroid(Asteroid::Size size);
         Asteroid(Point center, int direction, Asteroid::Size size);
+        Asteroid::Size GetSize() const { return _size; }
+
+    private:
+        Asteroid::Size _size;
 };
 
 #endif
