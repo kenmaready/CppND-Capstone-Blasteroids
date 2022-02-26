@@ -2,7 +2,7 @@
 
 This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). This was built upon starter code provided by the course, which was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
-<img src="snake_game.gif"/>
+<img src="blasteroids.gif"/>
 
   In this Capstone Project, we could built our own C++ application or extend the Snake game example, following the principles we have learned throughout this Nanodegree Program. This project demonstrates our ability to independently create applications using a wide range of C++ features.
 
