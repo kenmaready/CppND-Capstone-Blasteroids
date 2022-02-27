@@ -1,12 +1,10 @@
+#include <climits>
 #include "Polygon.h"
 #include "Settings.h"
-#include <climits>
+#include "utilities.h"
 
 using namespace Settings;
-
-double radians(double num) {
-    return num * (M_PI / 180);
-}
+using utilities::radians;
 
 int Polygon::IdCounter = 0;
 

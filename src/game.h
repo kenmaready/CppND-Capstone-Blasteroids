@@ -11,6 +11,7 @@
 #include "Ship.h"
 #include "Shot.h"
 #include "Asteroid.h"
+#include "Explosion.h"
 #include "Settings.h"
 
 // some conveneint aliases:
@@ -28,9 +29,10 @@ class Game {
 
  private:
   SDL_Point food;
-  std::shared_ptr<Ship> ship;
-  ShotVector shots;
-  AsteroidVector asteroids;
+  std::shared_ptr<Ship> ship {nullptr};
+  ShotVector shots {};
+  AsteroidVector asteroids {};
+  std::shared_ptr<Explosion> explosion {nullptr};
 
   std::random_device dev;
   std::mt19937 engine;
@@ -38,8 +40,11 @@ class Game {
   std::uniform_int_distribution<int> random_h;
 
   int score{0};
+  int shipsRemaining {kNumShips};
+  bool shipExploding {false};
 
   void Update();
+  void InitializeShip();
   void InitializeAsteroids();
   void InitializeShotVector();
   void HandleAsteroidBlast(const int &asteroidId);

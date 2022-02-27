@@ -21,20 +21,20 @@ void Controller::HandleInput(bool &running, std::shared_ptr<Ship> &ship, ShotVec
           break;
 
         case SDLK_LEFT:
-          ChangeDirection(ship, Ship::Direction::kLeft);
+          if (ship) ChangeDirection(ship, Ship::Direction::kLeft);
           break;
 
         case SDLK_RIGHT:
-          ChangeDirection(ship, Ship::Direction::kRight);
+          if (ship) ChangeDirection(ship, Ship::Direction::kRight);
           break;
 
         case SDLK_SPACE:
-          std::shared_ptr<Shot> shot = FindFreeShot(shots);
-          if (shot) {
-            shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation());
+          if (ship) {
+            std::shared_ptr<Shot> shot = FindFreeShot(shots);
+            if (shot) {
+              shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation());
+            }
           }
-
-
           break;
       }
     }

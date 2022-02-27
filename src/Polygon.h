@@ -6,7 +6,6 @@
 #include <cmath>
 #include "SDL.h"
 #include "SDL2_gfxPrimitives.h"
-// #include "renderer.h"
 
 class Point {
     public:

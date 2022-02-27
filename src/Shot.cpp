@@ -1,8 +1,7 @@
 #include "Shot.h"
+#include "utilities.h"
 
-double radians2(double num) {
-    return num * (M_PI / 180);
-}
+using utilities::radians;
 
 Shot::Shot(double x, double y, int direction, bool active): _x(x), _y(y), _direction(direction - 135), _active(active) {
         Init();
@@ -25,8 +24,8 @@ void Shot::Update() {
     double tempX = this->_speed * .1;
     double tempY = this->_speed * .1;
 
-    double rotatedX = tempX * std::cos(radians2(_direction)) - tempY * std::sin(radians2(_direction));
-    double rotatedY = tempX * std::sin(radians2(_direction)) + tempY * std::cos(radians2(_direction));
+    double rotatedX = tempX * std::cos(radians(_direction)) - tempY * std::sin(radians(_direction));
+    double rotatedY = tempX * std::sin(radians(_direction)) + tempY * std::cos(radians(_direction));
 
     this->_x += rotatedX;
     if ((this->_x > kScreenWidth) | (this->_x < 0)) Deactivate();

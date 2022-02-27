@@ -4,11 +4,11 @@
 using namespace Settings;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : ship(std::make_shared<Ship>()),
-      engine(dev()),
+    : engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) {
 
+  InitializeShip();
   InitializeAsteroids();
   InitializeShotVector();
 }
@@ -30,7 +30,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, ship, shots);
     Update();
-    renderer.Render(ship, asteroids, shots);
+    renderer.Render(ship, asteroids, shots, explosion);
 
     frame_end = SDL_GetTicks();
 
@@ -41,7 +41,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, shipsRemaining);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -60,7 +60,8 @@ void Game::Update() {
     asteroid->Update();
   }
 
-  ship->Update();
+  if (ship) ship->Update();
+  else if (explosion && !explosion->IsComplete()) explosion->Update();
 
   for (auto &shot: shots) {
     if (shot->IsActive()) shot->Update();
@@ -77,6 +78,11 @@ void Game::Update() {
         blastedAsteroidIds.push_back(asteroid->GetId());
       }
     }
+
+    if (ship && ship->IsColliding(*asteroid)) {
+      explosion = std::make_shared<Explosion>(ship->GetCenter(), ship->GetRotation());
+      ship.reset();
+    }
   }
 
   for (const int asteroidId : blastedAsteroidIds) {
@@ -85,11 +91,8 @@ void Game::Update() {
 
 }
 
-void Game::InitializeAsteroids() {
-  for (size_t i = 0; i < kNumAsteroids ; i++) {
-    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>(Asteroid::Size::kLarge);
-    asteroids.emplace_back(std::move(asteroid));
-  }
+void Game::InitializeShip() {
+  ship = std::make_shared<Ship>(Point(kScreenWidth/2, kScreenHeight/2));
 }
 
 void Game::InitializeShotVector() {
@@ -102,6 +105,38 @@ void Game::InitializeShotVector() {
   for (size_t i = 0; i < kNumShots; i++) {
     std::shared_ptr<Shot> shot = std::make_shared<Shot>(0, 0, 0, false);
     shots.emplace_back(std::move(shot));
+  }
+}
+
+void Game::InitializeAsteroids() {
+  // set up random generators:
+  std::uniform_int_distribution<int> distrX(0, kScreenWidth - kNoSpawnZoneWidth);
+  std::uniform_int_distribution<int> distrY(0, kScreenHeight - kNoSpawnZoneHeight);
+  std::uniform_int_distribution<int> distrRotation(0, 360);
+  std::uniform_int_distribution<int> distrDirection(0, 360);
+  
+  for (size_t i = 0; i < kNumAsteroids ; i++) {
+
+    
+    // generate random center
+    int centerX = distrX(engine);
+    int centerY = distrY(engine);
+
+    // adjustmen to create "No Spawn Zone" around ship:
+    if (centerX > (kScreenWidth/2 - kNoSpawnZoneWidth/2)) centerX += kNoSpawnZoneWidth;
+    if (centerY > (kScreenHeight/2 - kNoSpawnZoneHeight/2)) centerY += kNoSpawnZoneHeight;
+
+
+    Point center (centerX, centerY);
+
+    // generate random Direction:
+    int direction = distrDirection(engine);
+
+    // generate random Rotation (orientation):
+    int rotation = distrRotation(engine);
+
+    std::shared_ptr<Asteroid> asteroid = std::make_shared<Asteroid>(center, direction, rotation, Asteroid::Size::kLarge);
+    asteroids.emplace_back(std::move(asteroid));
   }
 }
 
@@ -124,7 +159,6 @@ void Game::HandleAsteroidBlast(const int &asteroidId) {
           score += 40;
           break;
       }
-
       RemoveAsteroid(asteroidId);
     }
 }
@@ -134,7 +168,12 @@ void Game::SpawnNewAsteroids(Point center, int direction, Asteroid::Size size, i
   const int directionChange = 83; 
   
   for (size_t i = 0; i < number; i++) {
-    std::shared_ptr<Asteroid> childAsteroid = std::make_shared<Asteroid>(center, startingDirection + (i * directionChange), size);
+    // generate rnadom orientation for child asteroid:
+    std::uniform_int_distribution<int> distrRotation(0, 360);
+    int rotation = distrRotation(engine);
+
+    // initialize new Asteroid object and add to AsteroidVector:
+    std::shared_ptr<Asteroid> childAsteroid = std::make_shared<Asteroid>(center, startingDirection + (i * directionChange), rotation, size);
     asteroids.emplace_back(std::move(childAsteroid));
   }
 }

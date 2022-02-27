@@ -54,7 +54,7 @@ Asteroid::Asteroid(Asteroid::Size size): _size(size) {
 }
 
 
-Asteroid::Asteroid(Point center, int direction, Asteroid::Size size): _size(size) {
+Asteroid::Asteroid(Point center, int direction, int rotation, Asteroid::Size size): _size(size) {
     
     int sizeFactor = getSizeFactor(size);
 
@@ -68,11 +68,6 @@ Asteroid::Asteroid(Point center, int direction, Asteroid::Size size): _size(size
 
     this->_center = center;
     this->_direction = direction;
+    this->_rotation = rotation;
     this->_speed = kAsteroidSpeed;
-
-        // set up random generator for random rotation:
-    std::random_device rd;
-    std::mt19937 eng(rd());
-    std::uniform_int_distribution<int> distrRotation(0, 360);
-    this->_rotation = distrRotation(eng);
 }

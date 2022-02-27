@@ -39,7 +39,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots) {
+void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -53,7 +53,8 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
     asteroid->Draw(sdl_renderer);
   }
 
-  ship->Draw(sdl_renderer);
+  if (ship) ship->Draw(sdl_renderer);
+  else if (explosion && !explosion->IsComplete()) explosion->Draw(sdl_renderer);
 
   for (const auto &shot : shots) {
     shot->Draw(sdl_renderer);
@@ -63,7 +64,7 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Blasteroids!   Score: " + std::to_string(score)};
+void Renderer::UpdateWindowTitle(int score, int shipsRemaining) {
+  std::string title{"Blasteroids!   Score: " + std::to_string(score) + "  Ships: " + std::to_string(shipsRemaining)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }

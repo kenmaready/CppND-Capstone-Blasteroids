@@ -8,6 +8,7 @@
 #include "Ship.h"
 #include "Shot.h"
 #include "Asteroid.h"
+#include "Explosion.h"
 
 class Renderer {
  public:
@@ -15,7 +16,7 @@ class Renderer {
            const std::size_t grid_width, const std::size_t grid_height);
   ~Renderer();
 
-  void Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots);
+  void Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion);
   void UpdateWindowTitle(int score, int fps);
   SDL_Renderer *getSDL_Renderer() { return sdl_renderer; }
 
