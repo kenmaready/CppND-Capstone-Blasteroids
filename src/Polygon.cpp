@@ -8,34 +8,16 @@ double radians(double num) {
     return num * (M_PI / 180);
 }
 
-Polygon::Polygon(std::vector<Point> vertices): _vertices(vertices) {
+int Polygon::IdCounter = 0;
+
+Polygon::Polygon(std::vector<Point> vertices): _id(IdCounter++), _vertices(vertices) {
     _center = Point(0,0);
 }
 
-Polygon::Polygon(std::vector<Point> vertices, Point center): _vertices(vertices), _center(center) {
+Polygon::Polygon(std::vector<Point> vertices, Point center): _id(IdCounter++), _vertices(vertices), _center(center) {
 }
 
 Polygon::~Polygon() {
-}
-
-Point Polygon::GetCenter() const {
-    return _center;
-}
-
-std::vector<Point> Polygon::GetVertices() const {
-    return this->_vertices;
-}
-
-int Polygon::GetNumberOfVertices() const {
-    return this->_length;
-}
-
-int Polygon::GetRotation() const {
-    return this->_rotation;
-}
-
-int Polygon::GetDirection() const {
-    return this->_direction;
 }
 
 void Polygon::SetCenter(Point center) {
@@ -110,26 +92,6 @@ void Polygon::ChangeRotation(int change) {
 }
 
 bool Polygon::IsColliding(Polygon &other) {
-    // get bounding edges of this object
-    // int myWidthHalf = (boundaries.right - boundaries.left) / 2;
-    // int myHeightHalf = (boundaries.bottom - boundaries.top) / 2;
-    // Point myCenter = this->GetCenter();
-
-    // int myRightEdge = myCenter.x + myWidthHalf;
-    // int myLeftEdge = myCenter.x - myWidthHalf;
-    // int myTopEdge = myCenter.y - myHeightHalf;
-    // int myBottomEdge = myCenter.y + myHeightHalf;
-
-
-    // // get bounding edges of other object
-    // int yourWidthHalf = (other.boundaries.right - other.boundaries.left) / 2;
-    // int yourHeightHalf = (other.boundaries.bottom - other.boundaries.height) / 2;
-    // Point yourCenter = other.GetCenter();
-
-    // int yourRightEdge = yourCenter.x + yourWidthHalf;
-    // int yourLeftEdge = yourCenter.x - yourWidthHalf;
-    // int yourTopEdge = yourCenter.y - yourHeightHalf;
-    // int yourBottomEdge = yourCenter.y + yourHeightHalf;
 
     // check horizontal (x-wise_ overlao):
     bool overlapsHorizontally = (this->boundaries.right > other.boundaries.left) && (this->boundaries.left < other.boundaries.right);
@@ -137,10 +99,6 @@ bool Polygon::IsColliding(Polygon &other) {
 
     // if overlaps both ways, we have a collision:
     if (overlapsHorizontally & overlapsVertically) {
-        this->_color = {.r = 255, .g = 0, .b = 0, .a = 255 };
-        other._color = {.r = 0, .g = 0, .b = 255, .a = 255 };
-        // std::cout << "This: " << this->boundaries.top << ", " << this->boundaries.bottom << ", " << this->boundaries.left << ", " << this->boundaries.right << std::endl;
-        // std::cout << "Other: " << other.boundaries.top << ", " << other.boundaries.bottom << ", " << other.boundaries.left << ", " << other.boundaries.right << std::endl;
         return true;
     }
     return false;

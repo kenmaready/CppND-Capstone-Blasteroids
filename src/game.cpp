@@ -66,14 +66,21 @@ void Game::Update() {
     if (shot->IsActive()) shot->Update();
   }
 
+  // check to see if any asteroids hit, and then handle
+
+  std::vector<int> blastedAsteroidIds;
+
   for (auto &asteroid : asteroids) {
     for (auto &shot: shots) {
       if (shot->IsActive() && shot->IsColliding(*asteroid)) {
-        std::cout << "Collision Detected between shot and asteroid!" << std::endl;
         shot->Deactivate();
-        HandleAsteroidBlast(asteroid);
+        blastedAsteroidIds.push_back(asteroid->GetId());
       }
     }
+  }
+
+  for (const int asteroidId : blastedAsteroidIds) {
+    HandleAsteroidBlast(asteroidId);
   }
 
 }
@@ -86,11 +93,11 @@ void Game::InitializeAsteroids() {
 }
 
 void Game::InitializeShotVector() {
-  // Generating fector of Inactive shots
+  // Generating vector of Inactive shots
   // will be activated as needed
 
   // Based on "object pooling" concept as described in Daniel_1985's
-  // answer to this damgedev.stackexchange post:
+  // answer to this gamedev.stackexchange post:
   // https://gamedev.stackexchange.com/questions/175651/c-object-management-deletion
   for (size_t i = 0; i < kNumShots; i++) {
     std::shared_ptr<Shot> shot = std::make_shared<Shot>(0, 0, 0, false);
@@ -98,6 +105,41 @@ void Game::InitializeShotVector() {
   }
 }
 
-void Game::HandleAsteroidBlast(std::shared_ptr<Asteroid> asteroid) {
-    
+void Game::HandleAsteroidBlast(const int &asteroidId) {
+    auto asteroidHandle = std::find_if(asteroids.begin(), asteroids.end(), [&](const std::shared_ptr<Asteroid> ast){ return ast->GetId() == asteroidId; });
+
+    if ( asteroidHandle !=asteroids.end()) { 
+      Asteroid::Size size = (*asteroidHandle)->GetSize();
+
+      switch (size) {
+        case (Asteroid::Size::kLarge):
+          SpawnNewAsteroids((*asteroidHandle)->GetCenter(), (*asteroidHandle)->GetDirection(), Asteroid::Size::kMedium, 2);
+          score += 10;
+          break;
+        case (Asteroid::Size::kMedium):
+          SpawnNewAsteroids((*asteroidHandle)->GetCenter(), (*asteroidHandle)->GetDirection(), Asteroid::Size::kSmall, 2);
+          score +=20;
+          break;
+        case (Asteroid::Size::kSmall):
+          score += 40;
+          break;
+      }
+
+      RemoveAsteroid(asteroidId);
+    }
+}
+
+void Game::SpawnNewAsteroids(Point center, int direction, Asteroid::Size size, int number) {
+  const int startingDirection = direction - 40;
+  const int directionChange = 83; 
+  
+  for (size_t i = 0; i < number; i++) {
+    std::shared_ptr<Asteroid> childAsteroid = std::make_shared<Asteroid>(center, startingDirection + (i * directionChange), size);
+    asteroids.emplace_back(std::move(childAsteroid));
+  }
+}
+
+void Game::RemoveAsteroid(const int &asteroidId) {
+  auto isDestroyed = [asteroidId](std::shared_ptr<Asteroid> ast){ return ast->GetId() == asteroidId; };
+  asteroids.erase(std::remove_if(asteroids.begin(), asteroids.end(), isDestroyed));
 }

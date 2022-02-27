@@ -11,9 +11,12 @@ class Asteroid : public Polygon {
         Asteroid(Asteroid::Size size);
         Asteroid(Point center, int direction, Asteroid::Size size);
         Asteroid::Size GetSize() const { return _size; }
+        bool IsDestroyed() { return _destroyed; }
+        void MarkDestroyed() { _destroyed = true; }
 
     private:
         Asteroid::Size _size;
+        bool _destroyed {false};
 };
 
 #endif

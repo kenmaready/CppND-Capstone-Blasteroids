@@ -4,8 +4,6 @@
 
 using namespace Settings;
 
-#define ASTEROID_POINTS 6;
-
 int getSizeFactor(Asteroid::Size size) {
     switch (size) {
         case Asteroid::Size::kLarge:
@@ -17,7 +15,7 @@ int getSizeFactor(Asteroid::Size size) {
     }
 }
 
-Asteroid::Asteroid(Asteroid::Size size) {
+Asteroid::Asteroid(Asteroid::Size size): _size(size) {
 
     int sizeFactor = getSizeFactor(size);
 
@@ -56,7 +54,7 @@ Asteroid::Asteroid(Asteroid::Size size) {
 }
 
 
-Asteroid::Asteroid(Point center, int direction, Asteroid::Size size) {
+Asteroid::Asteroid(Point center, int direction, Asteroid::Size size): _size(size) {
     
     int sizeFactor = getSizeFactor(size);
 

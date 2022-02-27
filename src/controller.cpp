@@ -32,8 +32,6 @@ void Controller::HandleInput(bool &running, std::shared_ptr<Ship> &ship, ShotVec
           std::shared_ptr<Shot> shot = FindFreeShot(shots);
           if (shot) {
             shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation());
-            std::cout << "Ship rotation is: " << ship->GetRotation() << std::endl;
-            std::cout << "Shot direction is: " << shot->GetDirection() << std::endl;
           }
 
 

@@ -3,6 +3,7 @@
 
 #include <random>
 #include <vector>
+#include <algorithm>
 #include <memory>
 #include "SDL.h"
 #include "controller.h"
@@ -41,7 +42,9 @@ class Game {
   void Update();
   void InitializeAsteroids();
   void InitializeShotVector();
-  void HandleAsteroidBlast(std::shared_ptr<Asteroid> asteroid);
+  void HandleAsteroidBlast(const int &asteroidId);
+  void SpawnNewAsteroids(Point center, int direction, Asteroid::Size size, int number);
+  void RemoveAsteroid(const int &asteroidId);
 };
 
 #endif

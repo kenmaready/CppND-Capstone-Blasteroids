@@ -23,6 +23,15 @@ struct Boundaries {
 };
 
 class Polygon {
+    private:
+        // tried to avoid using Ids, but discovered in eliminating and
+        // adding asteroids in the gam's asteroids vector, it was 
+        // needed to avoid much more complicated solutions to avoid
+        // issued caused by  of manipulating a vector while acucling 
+        // through it.
+        static int IdCounter;
+        int _id;
+
     protected:
         std::vector<Point> _vertices;
         Point _center;
@@ -34,17 +43,23 @@ class Polygon {
         SDL_Color _color = {.r = 255, .g = 255, .b = 255, .a = 255 };
 
     public:
-        Polygon() {};
+        Polygon(): _id(IdCounter++) {}; // give object an _id and then advance static counter;
         Polygon(std::vector<Point> vertices);
         Polygon(std::vector<Point> vertices, Point center);
         ~Polygon();
-        Point GetCenter() const;
-        std::vector<Point> GetVertices() const;
-        int GetNumberOfVertices() const;
-        int GetRotation() const;
-        int GetDirection() const;
 
+        // getters
+        int GetId() const { return _id; }
+        Point GetCenter() const { return _center; }
+        std::vector<Point> GetVertices() const { return _vertices; }
+        int GetNumberOfVertices() const { return _length; }
+        int GetRotation() const { return _rotation; }
+        int GetDirection() const { return _direction; }
+
+        // setters
         void SetCenter(Point center);
+        
+        // nehaviora methods:
         void Draw(SDL_Renderer *ren);
         void Update();
         void rotate();
