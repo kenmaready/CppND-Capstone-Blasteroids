@@ -19,9 +19,14 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
 * SDL2_gfx >= 1.0.4+dfsg-3
   * to install on linux:  sudo apt install libsdl2-gfx-dev
   * If you are building your own cmake/make instead of using the one provided, you will also need to do the following:
-    * Add a cmake file called FindSDL2_gfx.cmake to your cmake directory, the one that is included in this repo was found at [https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake)
+    * Add a cmake file called FindSDL2_gfx.cmake to your cmake directory, the one that is included in this repo was found at [this github repo](https://github.com/aminosbh/sdl2-cmake-modules/blob/master/FindSDL2_gfx.cmake)
     * In CMakeLists.txt, add a new `find_package(SDL2_gfx REQUIRED)`
     * Also in CMakeLists.txt add `${SDL2_GFX_LIBRARIES}` to your target_link_libraries
+* SDL@_tff
+  * to install on linux: sudo apt install libsdl2-ttf-dev
+  * will need to add a FindSDL2_ttf.cmake file to your /cmake directory (can use the one included in this github, obtained from [this github repo](https://github.com/aminosbh/sdl2-ttf-sample/blob/master/cmake/sdl2/FindSDL2_ttf.cmake))
+  * in CMakeLists.txt add a new `find_package(SDL2_ttf REQUIRED)`
+  * Also in CmakeLists.txt add `${SDL2_TTF_LIBRARY}` to your target_link_libraries
 * gcc/g++ >= 5.4
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)

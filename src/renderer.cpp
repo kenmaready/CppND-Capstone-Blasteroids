@@ -1,6 +1,7 @@
 #include "renderer.h"
 #include <iostream>
 #include <string>
+#include <SDL2/SDL_ttf.h>
 
 
 Renderer::Renderer(const std::size_t screen_width,
@@ -15,6 +16,8 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "SDL could not initialize.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+
+  TTF_Init();
 
   // Create Window
   sdl_window = SDL_CreateWindow("Blasteroids!", SDL_WINDOWPOS_CENTERED,
@@ -39,7 +42,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion) {
+void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion, const std::vector<std::shared_ptr<Announcement>> &announcements) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -58,6 +61,10 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
 
   for (const auto &shot : shots) {
     shot->Draw(sdl_renderer);
+  }
+
+  for (auto &announcement : announcements) {
+    announcement->Draw(sdl_renderer);
   }
 
   // Update Screen

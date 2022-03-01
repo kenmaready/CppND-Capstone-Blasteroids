@@ -27,6 +27,9 @@ namespace Settings {
 
     const std::size_t kExplosionDuration(300);
     const std::size_t kExplosionSpeed(20);
+
+    const std::size_t kAnnouncementWidth(300);
+    const std::size_t kAnnouncementHeight(100);
 };
 
 #endif

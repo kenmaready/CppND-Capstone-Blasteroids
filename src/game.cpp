@@ -4,10 +4,7 @@
 using namespace Settings;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : engine(dev()),
-      random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)) {
-
+    : engine(dev()) {
   InitializeShip();
   InitializeAsteroids();
   InitializeShotVector();
@@ -20,17 +17,18 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
+  status = Game::Status::Playing;
   bool running = true;
 
+  while (status != Game::Status::Terminated) {
 
-
-  while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, ship, shots);
+    if (!running) status = Game::Status::Terminated;
     Update();
-    renderer.Render(ship, asteroids, shots, explosion);
+    renderer.Render(ship, asteroids, shots, explosion, announcements);
 
     frame_end = SDL_GetTicks();
 
@@ -56,19 +54,70 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 }
 
 void Game::Update() {
+  // move asteroids
   for (auto &asteroid: asteroids) {
     asteroid->Update();
   }
 
-  if (ship) ship->Update();
-  else if (explosion && !explosion->IsComplete()) explosion->Update();
+  if (status == Game::Status::Playing) {
+    ship->Update();
+  }
 
+  if (status == Game::Status::Explosion) {
+    // update the exdplosion:
+    explosion->Update();
+
+    // check to see if the explosion has been competed
+    if (explosion->IsComplete()) {
+      // if so, set explostion to nullptr
+      explosion.reset();
+      // if no ships remaining, go to Game Over Status
+      if (shipsRemaining <= 0) {
+        status = Game::Status::GameOver;
+        announcements.emplace_back(std::make_shared<Announcement>("Game Over", 1000));
+      }
+      // else got to BetweenShips Status
+      else {
+        status = Game::Status::BetweenShips;
+        std::string message = std::to_string(shipsRemaining) + " Ship";
+        message.append((shipsRemaining > 1) ? "s" : "");
+        message.append(" Remaining");
+        announcements.emplace_back(std::make_shared<Announcement>(message, 300));
+
+        message = "Get Ready...";
+        announcements.emplace_back(std::make_shared<Announcement>("Get Ready...", 300));
+      }
+    }
+  }
+
+  if (status == Game::Status::BetweenShips) {
+    for (auto &announcement : announcements) {
+      announcement->Update();
+    }
+    // check to see if announcements are done by checking first in list:
+    if (announcements[0]->IsComplete()) {
+      announcements.clear();
+      InitializeShip();
+      status = Game::Status::Playing;
+    }
+  }
+
+  if (status == Game::Status::GameOver) {
+    for (auto &announcement : announcements) {
+      announcement->Update();
+    }
+    if (announcements[0]->IsComplete()) {
+      announcements.clear();
+      status = Game::Status::Terminated;
+    }
+  }
+
+  // update shots (in any status)
   for (auto &shot: shots) {
     if (shot->IsActive()) shot->Update();
   }
 
-  // check to see if any asteroids hit, and then handle
-
+  // Collision checks:
   std::vector<int> blastedAsteroidIds;
 
   for (auto &asteroid : asteroids) {
@@ -79,16 +128,24 @@ void Game::Update() {
       }
     }
 
+    
     if (ship && ship->IsColliding(*asteroid)) {
+      shipsRemaining--;
+      status = Game::Status::Explosion;
       explosion = std::make_shared<Explosion>(ship->GetCenter(), ship->GetRotation());
       ship.reset();
     }
   }
 
+  // remove hit asteroids from vector:
   for (const int asteroidId : blastedAsteroidIds) {
     HandleAsteroidBlast(asteroidId);
   }
 
+  // check to see if all asteroids have been destroyed
+  if (asteroids.size() <= 0) {
+    status = Game::Status::BetweenRounds;
+  }
 }
 
 void Game::InitializeShip() {

@@ -39,7 +39,6 @@ void Explosion::Update() {
 
 void Explosion::Draw(SDL_Renderer *ren) {
     for (Line *line : _lines) {
-        std::cout << "Drawing Explosion Line..." << std::endl;
 
         int tempX1 = line->A.x;
         int tempY1 = line->A.y;
