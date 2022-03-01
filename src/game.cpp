@@ -28,7 +28,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     controller.HandleInput(running, ship, shots);
     if (!running) status = Game::Status::Terminated;
     Update();
-    renderer.Render(ship, asteroids, shots, explosion, announcements);
+    renderer.Render(ship, asteroids, shots, explosion, announcement);
 
     frame_end = SDL_GetTicks();
 
@@ -74,7 +74,8 @@ void Game::Update() {
       // if no ships remaining, go to Game Over Status
       if (shipsRemaining <= 0) {
         status = Game::Status::GameOver;
-        announcements.emplace_back(std::make_shared<Announcement>("Game Over", 1000));
+        announcement = std::make_shared<Announcement>("Game Over", 1000);
+        announcement->AddSubtitle("Press Spacebar to Play Again");
       }
       // else got to BetweenShips Status
       else {
@@ -82,32 +83,25 @@ void Game::Update() {
         std::string message = std::to_string(shipsRemaining) + " Ship";
         message.append((shipsRemaining > 1) ? "s" : "");
         message.append(" Remaining");
-        announcements.emplace_back(std::make_shared<Announcement>(message, 300));
-
-        message = "Get Ready...";
-        announcements.emplace_back(std::make_shared<Announcement>("Get Ready...", 300));
+        announcement = (std::make_shared<Announcement>(message, 300));
+        announcement->AddSubtitle("Get Ready...");
       }
     }
   }
 
   if (status == Game::Status::BetweenShips) {
-    for (auto &announcement : announcements) {
       announcement->Update();
-    }
-    // check to see if announcements are done by checking first in list:
-    if (announcements[0]->IsComplete()) {
-      announcements.clear();
-      InitializeShip();
-      status = Game::Status::Playing;
-    }
+      if (announcement->IsComplete()) {
+        announcement.reset();
+        InitializeShip();
+        status = Game::Status::Playing;
+      }
   }
 
   if (status == Game::Status::GameOver) {
-    for (auto &announcement : announcements) {
-      announcement->Update();
-    }
-    if (announcements[0]->IsComplete()) {
-      announcements.clear();
+    announcement->Update();
+    if (announcement->IsComplete()) {
+      announcement.reset();
       status = Game::Status::Terminated;
     }
   }

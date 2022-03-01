@@ -19,7 +19,6 @@
 // some conveneint aliases:
 typedef std::vector<std::shared_ptr<Asteroid>> AsteroidVector;
 typedef std::vector<std::shared_ptr<Shot>> ShotVector;
-typedef std::vector<std::shared_ptr<Announcement>> AnnouncementVector;
 
 
 
@@ -38,7 +37,7 @@ class Game {
   ShotVector shots {};
   AsteroidVector asteroids {};
   std::shared_ptr<Explosion> explosion {nullptr};
-  AnnouncementVector announcements {};
+  std::shared_ptr<Announcement> announcement {nullptr};
 
   std::random_device dev;
   std::mt19937 engine;
