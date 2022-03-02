@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <mutex>
 #include "SDL.h"
-#include "controller.h"
 #include "renderer.h"
 #include "Announcement.h"
 #include "Ship.h"
@@ -20,11 +20,11 @@
 typedef std::vector<std::shared_ptr<Asteroid>> AsteroidVector;
 typedef std::vector<std::shared_ptr<Shot>> ShotVector;
 
-
+class Controller;
 
 class Game {
  public:
-  enum class Status { Playing, Explosion, BetweenShips, BetweenRounds, GameOver, Terminated };
+  enum class Status { StartingGame, Playing, Explosion, BetweenShips, BetweenRounds, GameOver, Terminated, NewGame };
 
   Game(std::size_t grid_width, std::size_t grid_height);
   void Run(Controller const &controller, Renderer &renderer,
@@ -49,9 +49,14 @@ class Game {
   Game::Status status;
   int shipsRemaining {kNumShips};
   bool shipExploding {false};
+  Polygon noSpawnZone;
+
+  std::mutex _mutex;
 
   void Update();
   void InitializeShip();
+  void SetNoSpawnZone();
+  bool NoSpawnZoneClear();
   void InitializeAsteroids();
   void InitializeShotVector();
   void HandleAsteroidBlast(const int &asteroidId);

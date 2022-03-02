@@ -10,11 +10,11 @@ void Controller::ChangeDirection(std::shared_ptr<Ship> &ship, Ship::Direction in
   if (input == Ship::Direction::kRight) ship->ChangeRotation(1 * kShipRotationSpeed);
 }
 
-void Controller::HandleInput(bool &running, std::shared_ptr<Ship> &ship, ShotVector &shots) const {
+void Controller::HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, ShotVector &shots) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
-      running = false;
+      status = Game::Status::Terminated;
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
@@ -34,7 +34,7 @@ void Controller::HandleInput(bool &running, std::shared_ptr<Ship> &ship, ShotVec
             if (shot) {
               shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation());
             }
-          }
+          } else if (status == Game::Status::GameOver) status = Game::Status::NewGame;
           break;
       }
     }

@@ -5,12 +5,13 @@
 #include <vector>
 #include "Ship.h"
 #include "Shot.h"
+#include "game.h"
 
 typedef std::vector<std::shared_ptr<Shot>> ShotVector;
 
 class Controller {
  public:
-  void HandleInput(bool &running, std::shared_ptr<Ship> &ship, ShotVector &shots) const;
+  void HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, ShotVector &shots) const;
 
  private:
   void ChangeDirection(std::shared_ptr<Ship> &ship, Ship::Direction input) const;

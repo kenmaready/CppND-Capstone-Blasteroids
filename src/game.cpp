@@ -1,12 +1,14 @@
 #include "game.h"
+#include "controller.h"
 #include <iostream>
+#include <thread>
+#include <future>
 
 using namespace Settings;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : engine(dev()) {
-  InitializeShip();
-  InitializeAsteroids();
+    : engine(dev()),
+      status(Game::Status::NewGame) {
   InitializeShotVector();
 }
 
@@ -17,16 +19,14 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  status = Game::Status::Playing;
-  bool running = true;
+  status = Game::Status::NewGame;
 
   while (status != Game::Status::Terminated) {
 
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, ship, shots);
-    if (!running) status = Game::Status::Terminated;
+    controller.HandleInput(status, ship, shots);
     Update();
     renderer.Render(ship, asteroids, shots, explosion, announcement);
 
@@ -54,6 +54,33 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 }
 
 void Game::Update() {
+
+  if (status == Game::Status::NewGame) {
+    // reset game:
+    asteroids.clear();
+    ship.reset();
+    score = 0;
+    round = 1;
+    shipsRemaining = kNumShips;
+    SetNoSpawnZone();
+    status = Game::Status::StartingGame;
+
+    // announce new game
+    announcement = std::make_shared<Announcement>("Game Starting", 300);
+    announcement->AddSubtitle("Get Ready...");
+  }
+
+  if (status == Game::Status::StartingGame) {
+    announcement->Update();
+    if (announcement->IsComplete()) {
+      announcement.reset();
+      // Initialize ship and asteroids (don't need to re-initialize ShotsVector:)
+      InitializeShip();
+      InitializeAsteroids();
+      status = Game::Status::Playing;
+    }
+  }
+
   // move asteroids
   for (auto &asteroid: asteroids) {
     asteroid->Update();
@@ -73,18 +100,18 @@ void Game::Update() {
       explosion.reset();
       // if no ships remaining, go to Game Over Status
       if (shipsRemaining <= 0) {
-        status = Game::Status::GameOver;
-        announcement = std::make_shared<Announcement>("Game Over", 1000);
+        announcement = std::make_shared<Announcement>("Game Over");
         announcement->AddSubtitle("Press Spacebar to Play Again");
+        status = Game::Status::GameOver;
       }
       // else got to BetweenShips Status
       else {
-        status = Game::Status::BetweenShips;
         std::string message = std::to_string(shipsRemaining) + " Ship";
         message.append((shipsRemaining > 1) ? "s" : "");
         message.append(" Remaining");
         announcement = (std::make_shared<Announcement>(message, 300));
         announcement->AddSubtitle("Get Ready...");
+        status = Game::Status::BetweenShips;
       }
     }
   }
@@ -93,6 +120,9 @@ void Game::Update() {
       announcement->Update();
       if (announcement->IsComplete()) {
         announcement.reset();
+        // need to use new thread to allow ship creation to wait for
+        // clear zone (among asteroids) while continuing to update
+        // asteroids in background:
         InitializeShip();
         status = Game::Status::Playing;
       }
@@ -137,13 +167,42 @@ void Game::Update() {
   }
 
   // check to see if all asteroids have been destroyed
-  if (asteroids.size() <= 0) {
+  if (status == Game::Status::Playing && asteroids.size() <= 0) {
     status = Game::Status::BetweenRounds;
   }
 }
 
 void Game::InitializeShip() {
+  // std::cout << "InitializeShip() called...." << std::endl;
+  // // rcheck to see if NoSpawnZone is clear:
+  // auto ftrNoSpawnZoneClear = std::async(&Game::NoSpawnZoneClear, this);
+
+  // // wait until e NoSpawnZone is clear:
+  // ftrNoSpawnZoneClear.get();
   ship = std::make_shared<Ship>(Point(kScreenWidth/2, kScreenHeight/2));
+}
+
+void Game::SetNoSpawnZone() {
+  Point NSZcenter{kScreenWidth / 2, kScreenHeight / 2};
+  std::vector<Point> NSZvertices{};
+  NSZvertices.push_back(Point(kScreenWidth/2 - kNoSpawnZoneWidth/2, kScreenHeight/2 - kNoSpawnZoneHeight/2));
+  NSZvertices.push_back(Point(kScreenWidth/2 + kNoSpawnZoneWidth/2, kScreenHeight/2 - kNoSpawnZoneHeight/2));
+  NSZvertices.push_back(Point(kScreenWidth/2 + kNoSpawnZoneWidth/2, kScreenHeight/2 + kNoSpawnZoneHeight/2));
+  NSZvertices.push_back(Point(kScreenWidth/2 - kNoSpawnZoneWidth/2, kScreenHeight/2 + kNoSpawnZoneHeight/2));
+
+  noSpawnZone = Polygon{NSZvertices, NSZcenter};
+}
+
+bool Game::NoSpawnZoneClear() {
+  
+  std::lock_guard<std::mutex> uLock(_mutex);
+  for (auto &asteroid : asteroids) {
+    std::cout << "Checking asteroid " << asteroid->GetId() << " to see if colliding with noSpawnZone..." << std::endl;
+    if (asteroid->IsColliding(noSpawnZone)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 void Game::InitializeShotVector() {

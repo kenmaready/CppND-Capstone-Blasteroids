@@ -4,16 +4,21 @@
 
 using namespace Settings;
 
-Announcement::Announcement(std::string text, int duration): _text(text), _duration(duration) {    
+Announcement::Announcement(std::string text, int duration): _text(text), _duration(duration) {
+    Init();
+}
+
+Announcement::Announcement(std::string text): Announcement(text, 0) {}
+
+void Announcement::Init() {
 
     if (!Sans) std::cout << "Unable to load font:\n" << "SDL2_TTF Error: " << TTF_GetError() << std::endl;
 
-    _rectangle.w = (_fontSize * .75) * text.length();
+    _rectangle.w = (_fontSize * .75) * _text.length();
     _rectangle.h = _fontSize;
 
     _rectangle.x = (kScreenWidth / 2) - (_rectangle.w / 2);
     _rectangle.y = (kScreenHeight / 2) - (_rectangle.h / 2);
-
 }
 
 void Announcement::AddSubtitle(std::string text) {
@@ -30,8 +35,11 @@ void Announcement::AddSubtitle(std::string text) {
 }
 
 void Announcement::Update() {
-    _timer ++;
-    if (_timer >= _duration) _complete = true;
+    if (_duration) {
+        _timer ++;
+        if (_timer > _duration * .6) White.a -= 2;
+        if (_timer >= _duration) _complete = true;
+    }
 }
 
 void Announcement::Draw(SDL_Renderer *ren) {

@@ -32,8 +32,11 @@ class Announcement {
         SDL_Color White = {255, 255, 255, 255};
         bool _complete {false};
 
+        void Init();
+
     public:        
-        Announcement(std::string text, int duration);
+        Announcement(std::string text, int duration); // durational announcement
+        Announcement(std::string text);
 
         void AddSubtitle(std::string text);
         void Update();
