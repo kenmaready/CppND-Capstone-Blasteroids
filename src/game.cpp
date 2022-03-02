@@ -82,6 +82,16 @@ void Game::Update() {
     }
   }
 
+  if (status == Game::Status::BetweenRounds) {
+    announcement->Update();
+    if (announcement->IsComplete()) {
+      announcement.reset();
+      InitializeShip();
+      InitializeAsteroids();
+      status = Game::Status::Playing;
+    }
+  }
+
   // move asteroids
   for (auto &asteroid: asteroids) {
     asteroid->Update();
@@ -171,6 +181,9 @@ void Game::Update() {
   // check to see if all asteroids have been destroyed
   if (status == Game::Status::Playing && asteroids.size() <= 0) {
     status = Game::Status::BetweenRounds;
+    round++;
+    announcement = (std::make_shared<Announcement>("Round " + std::to_string(round) + " Starting", 300));
+    announcement->AddSubtitle("Get Ready...");
   }
 }
 
@@ -201,28 +214,26 @@ bool Game::NoSpawnZoneClear() {
   bool areaClear = false;
 
   while(!areaClear) {
-    std::cout << "looping through while loop again..." << std::endl;
     // set flag to true (will remain if no asteroids in area)
     areaClear = true;
 
     // lock while running through asteroid vector:
-    std::cout << "Setting a lock_guard on game's _mutex..." << std::endl;
     std::unique_lock<std::mutex> uLock(_mutex);
     for (auto &asteroid : asteroids) {
-      std::cout << "Checking asteroid " << asteroid->GetId() << " to see if colliding with noSpawnZone..." << std::endl;
       if (asteroid->IsColliding(noSpawnZone)) {
         if (!announcement) {
-        announcement = std::make_shared<Announcement>("");
-        announcement->AddSubtitle("waiting for clear spot to spawn...");
+          // if can't spawn immediately, set announcement
+          // to let player know we're waiting on safe zone
+          announcement = std::make_shared<Announcement>("");
+          announcement->AddSubtitle("waiting for clear spot to spawn...");
         }
         areaClear = false; // if asteroid in field, set flag to false
         break; // don't need to check remaining asteroids;
       }
     }
     uLock.unlock();
-    std::cout << "Unlocked" << std::endl;
-    // std::cout << "setting this thread to sleep..." << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // sleep a little to avoid constant running of this loop
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
   }
   announcement.reset();
   return true;
@@ -248,7 +259,7 @@ void Game::InitializeAsteroids() {
   std::uniform_int_distribution<int> distrRotation(0, 360);
   std::uniform_int_distribution<int> distrDirection(0, 360);
   
-  for (size_t i = 0; i < kNumAsteroids ; i++) {
+  for (size_t i = 0; i < kNumAsteroids + (round - 1) ; i++) {
 
     
     // generate random center
