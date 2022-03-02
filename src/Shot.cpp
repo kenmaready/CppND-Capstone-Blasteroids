@@ -35,12 +35,11 @@ void Shot::Update() {
 }
 
 void Shot::Activate(double x, double y, int direction) {
-    this->Init();
-    
     this->_x = x;
     this->_y = y;
-    this->_direction = direction - 135;
 
+    this->Init();
+    this->_direction = direction - 135;
     this->_active = true;
 }
 

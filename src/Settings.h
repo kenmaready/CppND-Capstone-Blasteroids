@@ -15,8 +15,8 @@ namespace Settings {
 
     const std::size_t kNumAsteroids{6};
     const std::size_t kAsteroidSpeed(4);
-    const std::size_t kNoSpawnZoneWidth{160};
-    const std::size_t kNoSpawnZoneHeight(160);
+    const int kNoSpawnZoneWidth{200};
+    const int kNoSpawnZoneHeight(200);
 
     const std::size_t kNumShips(3);
     const int kShipRotationSpeed(10);

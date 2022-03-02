@@ -44,6 +44,7 @@ void Polygon::Draw(SDL_Renderer *ren) {
       int newX = _center.x - rotatedX;
       int newY = _center.y - rotatedY;
 
+
       vx[i] = newX;
       vy[i] = newY;
 

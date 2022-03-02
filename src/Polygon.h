@@ -35,7 +35,7 @@ class Polygon {
         std::vector<Point> _vertices;
         Point _center;
         int _length;
-        int _rotation;
+        int _rotation{0};
         int _direction;
         int _speed;
         Boundaries boundaries;

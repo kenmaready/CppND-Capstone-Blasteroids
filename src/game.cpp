@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <future>
+#include <chrono>
 
 using namespace Settings;
 
@@ -28,7 +29,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(status, ship, shots);
     Update();
-    renderer.Render(ship, asteroids, shots, explosion, announcement);
+    renderer.Render(ship, asteroids, shots, explosion, announcement, noSpawnZone);
 
     frame_end = SDL_GetTicks();
 
@@ -86,7 +87,7 @@ void Game::Update() {
     asteroid->Update();
   }
 
-  if (status == Game::Status::Playing) {
+  if (ship && status == Game::Status::Playing) {
     ship->Update();
   }
 
@@ -123,7 +124,8 @@ void Game::Update() {
         // need to use new thread to allow ship creation to wait for
         // clear zone (among asteroids) while continuing to update
         // asteroids in background:
-        InitializeShip();
+        std::thread t(&Game::InitializeShip, this);
+        t.detach(); // otherwise will get exception
         status = Game::Status::Playing;
       }
   }
@@ -174,34 +176,55 @@ void Game::Update() {
 
 void Game::InitializeShip() {
   // std::cout << "InitializeShip() called...." << std::endl;
-  // // rcheck to see if NoSpawnZone is clear:
-  // auto ftrNoSpawnZoneClear = std::async(&Game::NoSpawnZoneClear, this);
+  // rcheck to see if NoSpawnZone is clear:
+  auto ftrNoSpawnZoneClear = std::async(&Game::NoSpawnZoneClear, this);
 
-  // // wait until e NoSpawnZone is clear:
-  // ftrNoSpawnZoneClear.get();
+  // wait until e NoSpawnZone is clear:
+  ftrNoSpawnZoneClear.get();
+  std::cout << "future has returned - spawn zone is clear...." << std::endl;
   ship = std::make_shared<Ship>(Point(kScreenWidth/2, kScreenHeight/2));
 }
 
 void Game::SetNoSpawnZone() {
-  Point NSZcenter{kScreenWidth / 2, kScreenHeight / 2};
+  Point NSZcenter(kScreenWidth / 2, kScreenHeight / 2);
+  
   std::vector<Point> NSZvertices{};
-  NSZvertices.push_back(Point(kScreenWidth/2 - kNoSpawnZoneWidth/2, kScreenHeight/2 - kNoSpawnZoneHeight/2));
-  NSZvertices.push_back(Point(kScreenWidth/2 + kNoSpawnZoneWidth/2, kScreenHeight/2 - kNoSpawnZoneHeight/2));
-  NSZvertices.push_back(Point(kScreenWidth/2 + kNoSpawnZoneWidth/2, kScreenHeight/2 + kNoSpawnZoneHeight/2));
-  NSZvertices.push_back(Point(kScreenWidth/2 - kNoSpawnZoneWidth/2, kScreenHeight/2 + kNoSpawnZoneHeight/2));
+  NSZvertices.push_back(Point(-(kNoSpawnZoneWidth/2), (kNoSpawnZoneHeight/2)));
+  NSZvertices.push_back(Point((kNoSpawnZoneWidth/2), (kNoSpawnZoneHeight/2)));
+  NSZvertices.push_back(Point((kNoSpawnZoneWidth/2), (-kNoSpawnZoneHeight/2)));
+  NSZvertices.push_back(Point((-kNoSpawnZoneWidth/2), (-kNoSpawnZoneHeight/2)));
 
   noSpawnZone = Polygon{NSZvertices, NSZcenter};
 }
 
 bool Game::NoSpawnZoneClear() {
-  
-  std::lock_guard<std::mutex> uLock(_mutex);
-  for (auto &asteroid : asteroids) {
-    std::cout << "Checking asteroid " << asteroid->GetId() << " to see if colliding with noSpawnZone..." << std::endl;
-    if (asteroid->IsColliding(noSpawnZone)) {
-      return false;
+  bool areaClear = false;
+
+  while(!areaClear) {
+    std::cout << "looping through while loop again..." << std::endl;
+    // set flag to true (will remain if no asteroids in area)
+    areaClear = true;
+
+    // lock while running through asteroid vector:
+    std::cout << "Setting a lock_guard on game's _mutex..." << std::endl;
+    std::unique_lock<std::mutex> uLock(_mutex);
+    for (auto &asteroid : asteroids) {
+      std::cout << "Checking asteroid " << asteroid->GetId() << " to see if colliding with noSpawnZone..." << std::endl;
+      if (asteroid->IsColliding(noSpawnZone)) {
+        if (!announcement) {
+        announcement = std::make_shared<Announcement>("");
+        announcement->AddSubtitle("waiting for clear spot to spawn...");
+        }
+        areaClear = false; // if asteroid in field, set flag to false
+        break; // don't need to check remaining asteroids;
+      }
     }
+    uLock.unlock();
+    std::cout << "Unlocked" << std::endl;
+    // std::cout << "setting this thread to sleep..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+  announcement.reset();
   return true;
 }
 
