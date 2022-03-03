@@ -23,7 +23,7 @@ Ship::Ship(Point center) {
 Ship::Ship(): Ship(Point(kScreenWidth/2, kScreenHeight/2)) {}
 
 void Ship::Thrust() {
-    std::cout << "Starting speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
+    // std::cout << "Starting speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
 
     int deltaDirection = (_rotation - 135) - _direction;
     double thrustMomentumFactor = std::cos(radians(deltaDirection));
@@ -34,7 +34,7 @@ void Ship::Thrust() {
     double directionMomentumFactor = (1 / (_speed + 1));
     _direction += deltaDirection * directionMomentumFactor;
 
-    std::cout << "Starting speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
+    // std::cout << "Ending speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
 }
 
 void Ship::Update() {

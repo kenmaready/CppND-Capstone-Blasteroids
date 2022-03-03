@@ -4,6 +4,23 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
 
 <img src="blasteroids.gif"/>
 
+  ## Gameplay
+
+  ### Controls:
+  - Right and Left arrows to rotate ship
+  - Up arrow for thrust
+  - Spacebar to fire
+  
+  ### Basic Game Settings:
+  (most settings can be found in src/settings.h)
+  - Destroy all asteroids to move to next round
+  - Blasting a large asteroid breaks it into two medium asteroids, hitting a medium breaks it into two small, and hitting a small destroys it.
+  - A collision between a ship and an asteroid destroys the ship, but not the asteroid.
+  - First round starts with 5 large asteroids (increases by one each round)
+  - Scoring is 10 points for large asteroids, 20 for medium and 40 for small
+  - You have three ships, once all three have been destroyed, game is over and you may play again.
+
+## Project Description
   In this Capstone Project, we could choose our own C++ application or extend a Snake game example, following principles we've learned throughout the Nanodegree Program. The project should demonstrate our ability to independently create applications using a wide range of C++ features.
 
 ## Dependencies for Running Locally
@@ -36,9 +53,12 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. Make a build directory in the top level directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./Blasteroids`.
+2. `sudo apt-get install libsdl2-dev` (if you don't already ahve SDL2 locally)
+3. `sudo apt install libsdl2-gfx-dev` (if you don't already have SDL2_gfx locally)
+4. `sudo apt install libsdl2-ttf-dev` (if you don't already have SDL2_TTF locally)
+5. Make a build directory in the top level directory & cd into it: `mkdir build && cd build`
+6. Compile: `cmake .. && make`
+7. Run it: `./Blasteroids`.
 
 
 ## CC Attribution-ShareAlike 4.0 International

@@ -65,7 +65,7 @@ void Game::Update() {
     status = Game::Status::StartingGame;
 
     // announce new game
-    announcement = std::make_shared<Announcement>("Game Starting", 300);
+    announcement = std::make_shared<Announcement>("Game Starting", 240);
     announcement->AddSubtitle("Get Ready...");
   }
 
@@ -120,7 +120,7 @@ void Game::Update() {
         std::string message = std::to_string(shipsRemaining) + " Ship";
         message.append((shipsRemaining > 1) ? "s" : "");
         message.append(" Remaining");
-        announcement = (std::make_shared<Announcement>(message, 300));
+        announcement = (std::make_shared<Announcement>(message, 240));
         announcement->AddSubtitle("Get Ready...");
         status = Game::Status::BetweenShips;
       }
@@ -155,7 +155,7 @@ void Game::Update() {
   }
 
   // Collision checks:
-  std::vector<int> blastedAsteroidIds;
+  std::vector<int> blastedAsteroidIds; // empty vector to track hit asteroids
 
   for (auto &asteroid : asteroids) {
     for (auto &shot: shots) {
@@ -167,20 +167,6 @@ void Game::Update() {
 
     
     if (ship && ship->IsColliding(*asteroid)) {
-      // Debugging for Ghost Collission Issue (leave in code for now):
-      // std::cout << "Ship collided with asteroid " << asteroid->GetId() << std::endl;
-      // asteroid->MarkRed();
-      
-      // Point aCenter = asteroid->GetCenter();
-      // Boundaries aBounds = asteroid->GetBoundaries();
-      // std::cout << "Asteroid has center at " << aCenter.x << ", " << aCenter.y;
-      // std::cout << " and boundaries of " << aBounds.top << ", " << aBounds.bottom << ", " << aBounds.left << ", " << aBounds.right << std::endl;
-      
-      // Point sCenter = ship->GetCenter();
-      // Boundaries sBounds = ship->GetBoundaries();
-      // std::cout << "Ship has center at " << sCenter.x << ", " << sCenter.y;
-      // std::cout << " and boundaries of " << sBounds.top << ", " << sBounds.bottom << ", " << sBounds.left << ", " << sBounds.right << std::endl;
-
       shipsRemaining--;
       status = Game::Status::Explosion;
       explosion = std::make_shared<Explosion>(ship->GetCenter(), ship->GetRotation());
@@ -197,7 +183,7 @@ void Game::Update() {
   if (status == Game::Status::Playing && asteroids.size() <= 0) {
     status = Game::Status::BetweenRounds;
     round++;
-    announcement = (std::make_shared<Announcement>("Round " + std::to_string(round) + " Starting", 300));
+    announcement = (std::make_shared<Announcement>("Round " + std::to_string(round) + " Starting", 240));
     announcement->AddSubtitle("Get Ready...");
   }
 }
@@ -247,7 +233,7 @@ bool Game::NoSpawnZoneClear() {
           announcement->AddSubtitle("waiting for clear spot to spawn...");
         }
         areaClear = false; // if asteroid in field, set flag to false
-        break; // don't need to check remaining asteroids;
+        break; // exit for loop; don't need to check remaining asteroids;
       }
     }
     uLock.unlock();
