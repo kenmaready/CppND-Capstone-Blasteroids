@@ -1,5 +1,5 @@
 #include <random>
-#include "Settings.h"
+#include "settings.h"
 #include "Asteroid.h"
 
 using namespace Settings;

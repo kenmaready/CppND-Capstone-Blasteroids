@@ -54,6 +54,7 @@ class Polygon {
         int GetNumberOfVertices() const { return _length; }
         int GetRotation() const { return _rotation; }
         int GetDirection() const { return _direction; }
+        Boundaries GetBoundaries() const { return _boundaries; }
 
         // setters
         void SetCenter(Point center);

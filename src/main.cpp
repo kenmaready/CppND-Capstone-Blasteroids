@@ -1,8 +1,8 @@
 #include <iostream>
-#include "controller.h"
-#include "game.h"
-#include "renderer.h"
-#include "Settings.h"
+#include "Controller.h"
+#include "Game.h"
+#include "Renderer.h"
+#include "settings.h"
 
 using namespace Settings;
 

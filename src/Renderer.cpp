@@ -1,4 +1,4 @@
-#include "renderer.h"
+#include "Renderer.h"
 #include <iostream>
 #include <string>
 #include <SDL2/SDL_ttf.h>

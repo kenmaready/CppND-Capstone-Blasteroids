@@ -1,7 +1,7 @@
-#include "controller.h"
+#include "Controller.h"
 #include <iostream>
 #include "SDL.h"
-#include "Settings.h"
+#include "settings.h"
 
 using namespace Settings;
 

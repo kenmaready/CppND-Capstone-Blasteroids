@@ -5,7 +5,7 @@
 #include <iostream>
 #include "SDL.h"
 #include <SDL2/SDL_ttf.h>
-#include "Settings.h"
+#include "settings.h"
 
 #define FONT_PATH "assets/OpenSans-Regular.ttf"
 

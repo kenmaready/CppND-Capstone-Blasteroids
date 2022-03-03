@@ -5,7 +5,7 @@
 #include <vector>
 #include "Ship.h"
 #include "Shot.h"
-#include "game.h"
+#include "Game.h"
 
 typedef std::vector<std::shared_ptr<Shot>> ShotVector;
 

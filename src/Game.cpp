@@ -1,5 +1,5 @@
-#include "game.h"
-#include "controller.h"
+#include "Game.h"
+#include "Controller.h"
 #include <iostream>
 #include <thread>
 #include <future>
@@ -77,6 +77,7 @@ void Game::Update() {
       InitializeAsteroids();
       InitializeShotVector();
       status = Game::Status::Playing;
+      return; // required to avoid ghost collision issue
     }
   }
 
@@ -87,6 +88,7 @@ void Game::Update() {
       InitializeShip();
       InitializeAsteroids();
       status = Game::Status::Playing;
+      return; // required to avoid ghost collission issue
     }
   }
 
@@ -135,6 +137,7 @@ void Game::Update() {
         std::thread t(&Game::InitializeShip, this);
         t.detach(); // otherwise will get exception
         status = Game::Status::Playing;
+        return;
       }
   }
 
@@ -164,12 +167,19 @@ void Game::Update() {
 
     
     if (ship && ship->IsColliding(*asteroid)) {
-      // Debugging for Mystery Exploding Ship Issue:
+      // Debugging for Ghost Collission Issue:
       // std::cout << "Ship collided with asteroid " << asteroid->GetId() << std::endl;
       // asteroid->MarkRed();
       // Point aCenter = asteroid->GetCenter();
-      // std::cout << "Asteroid has center at " << aCenter.x << ", " << aCenter.y << std::endl;
-      // std::cout << "Ship has center at " << ship->GetCenter().x << ", " << ship->GetCenter().y << std::endl;
+      // Boundaries aBounds = asteroid->GetBoundaries();
+      // std::cout << "Asteroid has center at " << aCenter.x << ", " << aCenter.y;
+      // std::cout << " and boundaries of " << aBounds.top << ", " << aBounds.bottom << ", " << aBounds.left << ", " << aBounds.right << std::endl;
+      
+      // Point sCenter = ship->GetCenter();
+      // Boundaries sBounds = ship->GetBoundaries();
+      // std::cout << "Ship has center at " << sCenter.x << ", " << sCenter.y;
+      // std::cout << " and boundaries of " << sBounds.top << ", " << sBounds.bottom << ", " << sBounds.left << ", " << sBounds.right << std::endl;
+
       shipsRemaining--;
       status = Game::Status::Explosion;
       explosion = std::make_shared<Explosion>(ship->GetCenter(), ship->GetRotation());

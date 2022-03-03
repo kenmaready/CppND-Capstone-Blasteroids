@@ -8,13 +8,13 @@
 #include <string>
 #include <mutex>
 #include "SDL.h"
-#include "renderer.h"
+#include "Renderer.h"
 #include "Announcement.h"
 #include "Ship.h"
 #include "Shot.h"
 #include "Asteroid.h"
 #include "Explosion.h"
-#include "Settings.h"
+#include "settings.h"
 
 // some conveneint aliases:
 typedef std::vector<std::shared_ptr<Asteroid>> AsteroidVector;

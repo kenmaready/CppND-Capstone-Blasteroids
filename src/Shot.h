@@ -5,7 +5,7 @@
 #include "SDL.h"
 #include "SDL2_gfxPrimitives.h"
 #include "Polygon.h"
-#include "Settings.h"
+#include "settings.h"
 
 using namespace Settings;
 

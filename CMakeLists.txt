@@ -17,7 +17,7 @@ find_package(SDL2_gfx REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} src)
 
-add_executable(Blasteroids src/main.cpp src/Polygon.cpp src/Asteroid.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/Ship.cpp src/Shot.cpp src/Explosion.cpp src/Announcement.cpp)
+add_executable(Blasteroids src/main.cpp src/Polygon.cpp src/Asteroid.cpp src/Game.cpp src/Controller.cpp src/Renderer.cpp src/Ship.cpp src/Shot.cpp src/Explosion.cpp src/Announcement.cpp)
 string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
 target_link_libraries(Blasteroids ${SDL2_LIBRARIES} ${SDL2_GFX_LIBRARIES} ${SDL2_TTF_LIBRARY})
 

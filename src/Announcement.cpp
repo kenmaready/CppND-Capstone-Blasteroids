@@ -1,5 +1,5 @@
 #include "Announcement.h"
-#include "Settings.h"
+#include "settings.h"
 
 
 using namespace Settings;

@@ -1,5 +1,5 @@
 #include "Explosion.h"
-#include "Settings.h"
+#include "settings.h"
 #include "utilities.h"
 
 using utilities::radians;
