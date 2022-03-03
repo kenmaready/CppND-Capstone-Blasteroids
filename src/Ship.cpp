@@ -1,4 +1,5 @@
 #include "Ship.h"
+#include <algorithm>
 #include "settings.h"
 
 using namespace Settings;
@@ -13,8 +14,24 @@ Ship::Ship(Point center) {
 
     this->_center = center;
     this->_rotation = 0;
-    this->_direction = 0;
+    this->_direction = -135;
     this->_speed = 0;
 }
 
 Ship::Ship(): Ship(Point(kScreenWidth/2, kScreenHeight/2)) {}
+
+void Ship::Thrust() {
+    _speed = std::min(_speed + 3.0, static_cast<double>(kShipMaxSpeed));
+
+    // calculate direction based on rotation with adjustment for momentum:
+    int deltaDirection = (_rotation - 135) - _direction;
+    double momentumFactor = (1 / (_speed + 1));
+    _direction += deltaDirection * momentumFactor;
+
+    std::cout << "Current speed and direction: " << _speed << ", " << _direction << std::endl;
+}
+
+void Ship::Update() {
+    if (_speed > 0) _speed -= .1;
+    Polygon::Update();
+}

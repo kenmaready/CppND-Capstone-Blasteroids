@@ -36,8 +36,8 @@ class Polygon {
         Point _center;
         int _length;
         int _rotation{0};
-        int _direction;
-        int _speed;
+        int _direction{0};
+        double _speed;
         Boundaries _boundaries;
         SDL_Color _color = {.r = 255, .g = 255, .b = 255, .a = 255 };
 
@@ -54,6 +54,7 @@ class Polygon {
         int GetNumberOfVertices() const { return _length; }
         int GetRotation() const { return _rotation; }
         int GetDirection() const { return _direction; }
+        double GetSpeed() const { return _speed; }
         Boundaries GetBoundaries() const { return _boundaries; }
 
         // setters
@@ -62,7 +63,7 @@ class Polygon {
         
         // nehaviora methods:
         void Draw(SDL_Renderer *ren);
-        void Update();
+        virtual void Update();
         void rotate();
         void ChangeDirection(int change);
         void ChangeRotation(int change);

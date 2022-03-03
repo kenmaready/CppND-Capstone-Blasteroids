@@ -25,8 +25,8 @@ class Shot : public Polygon {
         int GetDirection() const { return _direction; }
         bool IsActive() const { return _active; }
         void Activate() { _active = true; }
-        void Activate(double x, double y, int direction);
-        void Deactivate() { _active = false; }
+        void Activate(double x, double y, int direction, double speed);
+        void Deactivate();
         void Init();
 };
 

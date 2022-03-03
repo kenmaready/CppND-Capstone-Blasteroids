@@ -18,6 +18,7 @@ void Controller::HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, 
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
+          if (ship) ship->Thrust();
           break;
 
         case SDLK_LEFT:
@@ -32,7 +33,7 @@ void Controller::HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, 
           if (ship) {
             std::shared_ptr<Shot> shot = FindFreeShot(shots);
             if (shot) {
-              shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation());
+              shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation(), ship->GetSpeed());
             }
           } else if (status == Game::Status::GameOver) status = Game::Status::NewGame;
           break;

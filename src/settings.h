@@ -13,13 +13,14 @@ namespace Settings {
     const std::size_t kGridHeight{40};
 
 
-    const std::size_t kNumAsteroids{6};
+    const std::size_t kNumAsteroids{1};
     const std::size_t kAsteroidSpeed(4);
     const int kNoSpawnZoneWidth{200};
     const int kNoSpawnZoneHeight(200);
 
     const std::size_t kNumShips(3);
     const int kShipRotationSpeed(10);
+    const int kShipMaxSpeed(20);
 
     const int kShotSpeed(10);
     const int kNumShots(128);

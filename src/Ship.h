@@ -18,6 +18,9 @@ class Ship : public Polygon {
 
         void MarkAsHit() { _isHit = true; }
         bool IsHit() const { return _isHit; }
+        void Thrust();
+        void Update() override;
+
 };
 
 #endif

@@ -167,9 +167,10 @@ void Game::Update() {
 
     
     if (ship && ship->IsColliding(*asteroid)) {
-      // Debugging for Ghost Collission Issue:
+      // Debugging for Ghost Collission Issue (leave in code for now):
       // std::cout << "Ship collided with asteroid " << asteroid->GetId() << std::endl;
       // asteroid->MarkRed();
+      
       // Point aCenter = asteroid->GetCenter();
       // Boundaries aBounds = asteroid->GetBoundaries();
       // std::cout << "Asteroid has center at " << aCenter.x << ", " << aCenter.y;

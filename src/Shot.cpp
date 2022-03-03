@@ -34,14 +34,21 @@ void Shot::Update() {
     if ((this->_y > kScreenHeight) | (this->_y < 0)) Deactivate();
 }
 
-void Shot::Activate(double x, double y, int direction) {
+void Shot::Activate(double x, double y, int direction, double speed) {
     this->_x = x;
     this->_y = y;
 
     this->Init();
     this->_direction = direction - 135;
     this->_active = true;
+    this->_speed += speed;
 }
+
+void Shot::Deactivate() { 
+    _active = false;
+    _speed = kShotSpeed;
+}
+
 
 void::Shot::Init() {
     this->_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
