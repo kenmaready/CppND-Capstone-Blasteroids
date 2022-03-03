@@ -16,7 +16,6 @@ class Controller {
 
  private:
   const Uint8* keystates;
-  void ChangeDirection(std::shared_ptr<Ship> &ship, Ship::Direction input) const;
   std::shared_ptr<Shot> FindFreeShot(ShotVector &shots) const;
 };
 

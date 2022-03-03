@@ -92,14 +92,30 @@ void Game::Update() {
     }
   }
 
+  // using concurrency to update each object in separate thread
+  // (probably not the most efficient since the jobs are so small,
+  // but using it here to illustrate use of concurrecny)
+  std::vector<std::thread> updateThreads;
+
   // move asteroids
   for (auto &asteroid: asteroids) {
-    asteroid->Update();
+    updateThreads.emplace_back(std::thread(&Asteroid::Update, asteroid.get()));
   }
 
   if (ship && status == Game::Status::Playing) {
-    ship->Update();
+    updateThreads.emplace_back(std::thread(&Ship::Update, ship.get()));
   }
+
+  // update shots (in any status)
+  for (auto &shot: shots) {
+    if (shot->IsActive()) {
+      updateThreads.emplace_back(std::thread(&Shot::Update, shot.get()));
+    }
+  }
+
+  // wait for update threads to complete before conditional behaoviour based
+  // on updates
+  for (auto &t: updateThreads) t.join();
 
   if (status == Game::Status::Explosion) {
     // update the exdplosion:
@@ -149,10 +165,6 @@ void Game::Update() {
     }
   }
 
-  // update shots (in any status)
-  for (auto &shot: shots) {
-    if (shot->IsActive()) shot->Update();
-  }
 
   // Collision checks:
   std::vector<int> blastedAsteroidIds; // empty vector to track hit asteroids

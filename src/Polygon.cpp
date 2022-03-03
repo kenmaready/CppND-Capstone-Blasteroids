@@ -61,11 +61,6 @@ void Polygon::Draw(SDL_Renderer *ren) {
       if (newY < minY) minY = newY;
   }
 
-//   this->_boundaries.top = minY;
-//   this->_boundaries.bottom = maxY;
-//   this->_boundaries.left = minX;
-//   this->_boundaries.right = maxX;
-
   SetBoundaries(minY, maxY, minX, maxX);
 
   polygonRGBA(ren, vx, vy, 4, _color.r, _color.g, _color.b, _color.a);

@@ -24,6 +24,7 @@ namespace Settings {
 
     const int kShotSpeed(10);
     const int kNumShots(128);
+    const int kMsBetweenShots(75);
     const int kShotRadius(3);
 
     const std::size_t kExplosionDuration(300);

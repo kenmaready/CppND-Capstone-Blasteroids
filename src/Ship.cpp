@@ -35,9 +35,19 @@ void Ship::Thrust() {
     _direction += deltaDirection * directionMomentumFactor;
 
     // std::cout << "Ending speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
+    _thrusterEngaged = true;
 }
 
 void Ship::Update() {
-    if (_speed > 0) _speed -= .1;
+    if (_speed > 0) _speed = std::max(_speed - .1, 0.0);
     Polygon::Update();
 }
+
+void Ship::Fire(std::shared_ptr<Shot> &shot) {
+    shot->Activate(_center.x, _center.y, _rotation, _speed);
+    lastFire = std::chrono::steady_clock::now();
+}
+
+bool Ship::CanFire() {
+    return std::chrono::steady_clock::now() > lastFire + std::chrono::milliseconds(kMsBetweenShots);
+};

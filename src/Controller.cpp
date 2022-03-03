@@ -5,11 +5,6 @@
 
 using namespace Settings;
 
-void Controller::ChangeDirection(std::shared_ptr<Ship> &ship, Ship::Direction input) const {
-  if (input == Ship::Direction::kLeft) ship->ChangeRotation(-1 * kShipRotationSpeed);
-  if (input == Ship::Direction::kRight) ship->ChangeRotation(1 * kShipRotationSpeed);
-}
-
 void Controller::HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, ShotVector &shots) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
@@ -17,22 +12,23 @@ void Controller::HandleInput(Game::Status &status, std::shared_ptr<Ship> &ship, 
       status = Game::Status::Terminated;
       } else {
 
-      if (ship && keystates[SDL_SCANCODE_UP]) ship->Thrust();
-
-      if (ship && keystates[SDL_SCANCODE_LEFT] && !keystates[SDL_SCANCODE_RIGHT]) {
-          ship->ChangeRotation(-kShipRotationSpeed);
-      }
+      if (ship) {
+        if (keystates[SDL_SCANCODE_UP]) ship->Thrust();
+        if (!keystates[SDL_SCANCODE_UP]) ship->Unthrust();
       
-      if (ship && keystates[SDL_SCANCODE_RIGHT] && !keystates[SDL_SCANCODE_LEFT]) {
-          ship->ChangeRotation(kShipRotationSpeed);
-      }
+        if (keystates[SDL_SCANCODE_LEFT] && !keystates[SDL_SCANCODE_RIGHT]) {
+            ship->ChangeRotation(-kShipRotationSpeed);
+        }
+     
+        if (keystates[SDL_SCANCODE_RIGHT] && !keystates[SDL_SCANCODE_LEFT]) {
+            ship->ChangeRotation(kShipRotationSpeed);
+        }
 
-      if (ship && keystates[SDL_SCANCODE_SPACE]) {
-          std::shared_ptr<Shot> shot = FindFreeShot(shots);
-          if (shot) {
-            shot->Activate(ship->GetCenter().x, ship->GetCenter().y, ship->GetRotation(), ship->GetSpeed());
-          }
-      }
+        if (keystates[SDL_SCANCODE_SPACE] && ship->CanFire()) {
+            std::shared_ptr<Shot> shot = FindFreeShot(shots);
+            if (shot) ship->Fire(shot);
+        }
+      } 
 
       if (status == Game::Status::GameOver && keystates[SDL_SCANCODE_SPACE]) {
         status = Game::Status::NewGame;

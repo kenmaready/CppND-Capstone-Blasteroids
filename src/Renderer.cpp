@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include <iostream>
 #include <string>
+#include <thread>
 #include <SDL2/SDL_ttf.h>
 
 
@@ -52,9 +53,7 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
   SDL_RenderClear(sdl_renderer);
 
   // Render Asteroids
-  for (const auto &asteroid : asteroids) {
-    asteroid->Draw(sdl_renderer);
-  }
+  for (const auto &asteroid : asteroids) asteroid->Draw(sdl_renderer);
 
   if (ship) ship->Draw(sdl_renderer);
   else if (explosion && !explosion->IsComplete()) explosion->Draw(sdl_renderer);
@@ -64,6 +63,7 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
   }
 
   if (announcement)  announcement->Draw(sdl_renderer);
+
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);

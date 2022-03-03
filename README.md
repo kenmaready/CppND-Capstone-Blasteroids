@@ -12,11 +12,12 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
   - Spacebar to fire
   
   ### Basic Game Settings:
-  (most settings can be found in src/settings.h)
+  (many settings can be found in src/settings.h)
+  - First round starts with 5 large asteroids
   - Destroy all asteroids to move to next round
   - Blasting a large asteroid breaks it into two medium asteroids, hitting a medium breaks it into two small, and hitting a small destroys it.
   - A collision between a ship and an asteroid destroys the ship, but not the asteroid.
-  - First round starts with 5 large asteroids (increases by one each round)
+  - Clear the board and start a new round (each round adds an additional asteroid for difficulty)
   - Scoring is 10 points for large asteroids, 20 for medium and 40 for small
   - You have three ships, once all three have been destroyed, game is over and you may play again.
 
