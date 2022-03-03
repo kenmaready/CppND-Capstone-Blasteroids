@@ -1,8 +1,10 @@
 #include "Ship.h"
 #include <algorithm>
 #include "settings.h"
+#include "utilities.h"
 
 using namespace Settings;
+using utilities::radians;
 
 Ship::Ship(Point center) {
     std::vector<Point> vertices;
@@ -21,14 +23,18 @@ Ship::Ship(Point center) {
 Ship::Ship(): Ship(Point(kScreenWidth/2, kScreenHeight/2)) {}
 
 void Ship::Thrust() {
-    _speed = std::min(_speed + 3.0, static_cast<double>(kShipMaxSpeed));
+    std::cout << "Starting speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
+
+    int deltaDirection = (_rotation - 135) - _direction;
+    double thrustMomentumFactor = std::cos(radians(deltaDirection));
+
+    _speed = std::max(0.0, std::min(_speed + (3.0 * thrustMomentumFactor), static_cast<double>(kShipMaxSpeed)));
 
     // calculate direction based on rotation with adjustment for momentum:
-    int deltaDirection = (_rotation - 135) - _direction;
-    double momentumFactor = (1 / (_speed + 1));
-    _direction += deltaDirection * momentumFactor;
+    double directionMomentumFactor = (1 / (_speed + 1));
+    _direction += deltaDirection * directionMomentumFactor;
 
-    std::cout << "Current speed and direction: " << _speed << ", " << _direction << std::endl;
+    std::cout << "Starting speed, rotation and direction: " << _speed << ", " << _rotation << ", " << _direction << std::endl;
 }
 
 void Ship::Update() {

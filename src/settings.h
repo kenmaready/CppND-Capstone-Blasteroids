@@ -13,7 +13,7 @@ namespace Settings {
     const std::size_t kGridHeight{40};
 
 
-    const std::size_t kNumAsteroids{1};
+    const std::size_t kNumAsteroids{6};
     const std::size_t kAsteroidSpeed(4);
     const int kNoSpawnZoneWidth{200};
     const int kNoSpawnZoneHeight(200);
