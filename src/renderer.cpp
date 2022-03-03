@@ -42,7 +42,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion, const std::shared_ptr<Announcement> &announcement, Polygon &NoSpawnZone) {
+void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::shared_ptr<Asteroid>> &asteroids, const std::vector<std::shared_ptr<Shot>> &shots, const std::shared_ptr<Explosion> &explosion, const std::shared_ptr<Announcement> &announcement) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -64,8 +64,6 @@ void Renderer::Render(const std::shared_ptr<Ship> &ship, const std::vector<std::
   }
 
   if (announcement)  announcement->Draw(sdl_renderer);
-
-  // NoSpawnZone.Draw(sdl_renderer);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);

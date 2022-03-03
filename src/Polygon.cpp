@@ -22,6 +22,13 @@ void Polygon::SetCenter(Point center) {
     this->_center = center;
 }
 
+void Polygon::SetBoundaries(int top, int bottom, int left, int right) {
+    _boundaries.top = top;
+    _boundaries.bottom = bottom;
+    _boundaries.left = left;
+    _boundaries.right = right;
+}
+
 void Polygon::Draw(SDL_Renderer *ren) {
   size_t num_vertices = _vertices.size();
 
@@ -54,10 +61,12 @@ void Polygon::Draw(SDL_Renderer *ren) {
       if (newY < minY) minY = newY;
   }
 
-  this->boundaries.top = minY;
-  this->boundaries.bottom = maxY;
-  this->boundaries.left = minX;
-  this->boundaries.right = maxX;
+//   this->_boundaries.top = minY;
+//   this->_boundaries.bottom = maxY;
+//   this->_boundaries.left = minX;
+//   this->_boundaries.right = maxX;
+
+  SetBoundaries(minY, maxY, minX, maxX);
 
   polygonRGBA(ren, vx, vy, 4, _color.r, _color.g, _color.b, _color.a);
 }
@@ -93,8 +102,8 @@ void Polygon::ChangeRotation(int change) {
 bool Polygon::IsColliding(Polygon &other) {
 
     // check horizontal (x-wise_ overlao):
-    bool overlapsHorizontally = (this->boundaries.right > other.boundaries.left) && (this->boundaries.left < other.boundaries.right);
-    bool overlapsVertically = (this->boundaries.top < other.boundaries.bottom) && (this->boundaries.bottom > other.boundaries.top);
+    bool overlapsHorizontally = (this->_boundaries.right > other._boundaries.left) && (this->_boundaries.left < other._boundaries.right);
+    bool overlapsVertically = (this->_boundaries.top < other._boundaries.bottom) && (this->_boundaries.bottom > other._boundaries.top);
 
     // if overlaps both ways, we have a collision:
     if (overlapsHorizontally & overlapsVertically) {

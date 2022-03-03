@@ -38,7 +38,7 @@ class Polygon {
         int _rotation{0};
         int _direction;
         int _speed;
-        Boundaries boundaries;
+        Boundaries _boundaries;
         SDL_Color _color = {.r = 255, .g = 255, .b = 255, .a = 255 };
 
     public:
@@ -57,6 +57,7 @@ class Polygon {
 
         // setters
         void SetCenter(Point center);
+        void SetBoundaries(int top, int bottom, int left, int right);
         
         // nehaviora methods:
         void Draw(SDL_Renderer *ren);
@@ -65,6 +66,7 @@ class Polygon {
         void ChangeDirection(int change);
         void ChangeRotation(int change);
         bool IsColliding(Polygon &other);
+        void MarkRed() { _color = {.r = 255, .g = 0, .b = 0, .a = 255 }; } // for debugging
 };
 
 

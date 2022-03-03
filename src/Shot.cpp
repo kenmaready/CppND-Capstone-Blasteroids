@@ -12,10 +12,10 @@ void Shot::Draw(SDL_Renderer *ren) {
     if (_active == true) {
         filledCircleRGBA(ren, this->_x, this->_y, kShotRadius, _color.r, _color.g, _color.b, _color.a);
 
-        this->boundaries.top = this->_y - kShotRadius;
-        this->boundaries.bottom = this->_y + kShotRadius;
-        this->boundaries.left = this->_x - kShotRadius;
-        this->boundaries.right = this->_x + kShotRadius;
+        this->_boundaries.top = this->_y - kShotRadius;
+        this->_boundaries.bottom = this->_y + kShotRadius;
+        this->_boundaries.left = this->_x - kShotRadius;
+        this->_boundaries.right = this->_x + kShotRadius;
     }
 }
 
@@ -46,8 +46,8 @@ void Shot::Activate(double x, double y, int direction) {
 void::Shot::Init() {
     this->_color = {.r = 255, .g = 255, .b = 255, .a = 255 };
 
-    this->boundaries.top = this->_y - kShotRadius;
-    this->boundaries.bottom = this->_y + kShotRadius;
-    this->boundaries.left = this->_x - kShotRadius;
-    this->boundaries.right = this->_x + kShotRadius;
+    this->_boundaries.top = this->_y - kShotRadius;
+    this->_boundaries.bottom = this->_y + kShotRadius;
+    this->_boundaries.left = this->_x - kShotRadius;
+    this->_boundaries.right = this->_x + kShotRadius;
 }

@@ -8,9 +8,7 @@
 using namespace Settings;
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : engine(dev()),
-      status(Game::Status::NewGame) {
-  InitializeShotVector();
+    : engine(dev()) {
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
@@ -29,7 +27,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(status, ship, shots);
     Update();
-    renderer.Render(ship, asteroids, shots, explosion, announcement, noSpawnZone);
+    renderer.Render(ship, asteroids, shots, explosion, announcement);
 
     frame_end = SDL_GetTicks();
 
@@ -75,9 +73,9 @@ void Game::Update() {
     announcement->Update();
     if (announcement->IsComplete()) {
       announcement.reset();
-      // Initialize ship and asteroids (don't need to re-initialize ShotsVector:)
       InitializeShip();
       InitializeAsteroids();
+      InitializeShotVector();
       status = Game::Status::Playing;
     }
   }
@@ -166,6 +164,12 @@ void Game::Update() {
 
     
     if (ship && ship->IsColliding(*asteroid)) {
+      // Debugging for Mystery Exploding Ship Issue:
+      // std::cout << "Ship collided with asteroid " << asteroid->GetId() << std::endl;
+      // asteroid->MarkRed();
+      // Point aCenter = asteroid->GetCenter();
+      // std::cout << "Asteroid has center at " << aCenter.x << ", " << aCenter.y << std::endl;
+      // std::cout << "Ship has center at " << ship->GetCenter().x << ", " << ship->GetCenter().y << std::endl;
       shipsRemaining--;
       status = Game::Status::Explosion;
       explosion = std::make_shared<Explosion>(ship->GetCenter(), ship->GetRotation());
@@ -194,7 +198,7 @@ void Game::InitializeShip() {
 
   // wait until e NoSpawnZone is clear:
   ftrNoSpawnZoneClear.get();
-  std::cout << "future has returned - spawn zone is clear...." << std::endl;
+  
   ship = std::make_shared<Ship>(Point(kScreenWidth/2, kScreenHeight/2));
 }
 
@@ -208,6 +212,10 @@ void Game::SetNoSpawnZone() {
   NSZvertices.push_back(Point((-kNoSpawnZoneWidth/2), (-kNoSpawnZoneHeight/2)));
 
   noSpawnZone = Polygon{NSZvertices, NSZcenter};
+  noSpawnZone.SetBoundaries(kScreenHeight/2 - kNoSpawnZoneHeight/2, 
+                            kScreenHeight/2 + kNoSpawnZoneHeight/2,
+                            kScreenWidth/2 - kNoSpawnZoneWidth/2,
+                            kScreenWidth/2 + kNoSpawnZoneWidth/2);
 }
 
 bool Game::NoSpawnZoneClear() {
@@ -224,7 +232,7 @@ bool Game::NoSpawnZoneClear() {
         if (!announcement) {
           // if can't spawn immediately, set announcement
           // to let player know we're waiting on safe zone
-          announcement = std::make_shared<Announcement>("");
+          announcement = std::make_shared<Announcement>(" ");
           announcement->AddSubtitle("waiting for clear spot to spawn...");
         }
         areaClear = false; // if asteroid in field, set flag to false
