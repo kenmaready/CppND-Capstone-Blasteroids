@@ -22,7 +22,7 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
   - You have three ships, once all three have been destroyed, game is over and you may play again.
 
 ## Project Description
-  In this Capstone Project, we could choose our own C++ application or extend a Snake game example, following principles we've learned throughout the Nanodegree Program. The project should demonstrate our ability to independently create applications using a wide range of C++ features.
+  In this Capstone Project, we could choose our own C++ application or extend a Snake game example, following principles we've learned throughout the Nanodegree Program. The purpose of the project is to demonstrate our ability to independently create applications using a wide range of C++ features.
 
 ## Dependencies for Running Locally
 * cmake >= 3.7

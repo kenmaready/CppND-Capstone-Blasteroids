@@ -2,7 +2,6 @@
 #define SHIP_H
 
 #include <vector>
-#include <iostream>
 #include <chrono>
 #include <memory>
 #include "Polygon.h"

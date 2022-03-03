@@ -48,9 +48,6 @@ Asteroid::Asteroid(Asteroid::Size size): _size(size) {
 
     // set speed:
     this->_speed = kAsteroidSpeed;
-
-
-    std::cout << "New Asteroid will be centered at (" << centerX << ", " << centerY << ")..." << std::endl;
 }
 
 

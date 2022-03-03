@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Controller.h"
-#include <iostream>
 #include <thread>
 #include <future>
 #include <chrono>
@@ -201,7 +200,6 @@ void Game::Update() {
 }
 
 void Game::InitializeShip() {
-  // std::cout << "InitializeShip() called...." << std::endl;
   // rcheck to see if NoSpawnZone is clear:
   auto ftrNoSpawnZoneClear = std::async(&Game::NoSpawnZoneClear, this);
 

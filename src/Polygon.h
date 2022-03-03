@@ -1,7 +1,6 @@
 #ifndef _POLYGON_H_
 #define _POLYGON_H_
 
-#include <iostream>
 #include <vector>
 #include <cmath>
 #include "SDL.h"
@@ -68,7 +67,7 @@ class Polygon {
         void ChangeDirection(int change);
         void ChangeRotation(int change);
         bool IsColliding(Polygon &other);
-        void MarkRed() { _color = {.r = 255, .g = 0, .b = 0, .a = 255 }; } // for debugging
+        void MarkRed() { _color = {.r = 255, .g = 0, .b = 0, .a = 255 }; } // useful for debugging
 };
 
 
