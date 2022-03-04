@@ -96,16 +96,17 @@ void Game::Update() {
   // but using it here to illustrate use of concurrecny)
   std::vector<std::thread> updateThreads;
 
-  // move asteroids
+  // update asteroids
   for (auto &asteroid: asteroids) {
     updateThreads.emplace_back(std::thread(&Asteroid::Update, asteroid.get()));
   }
 
+  // update shots
   if (ship && status == Game::Status::Playing) {
     updateThreads.emplace_back(std::thread(&Ship::Update, ship.get()));
   }
 
-  // update shots (in any status)
+  // update shots
   for (auto &shot: shots) {
     if (shot->IsActive()) {
       updateThreads.emplace_back(std::thread(&Shot::Update, shot.get()));

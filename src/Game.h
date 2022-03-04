@@ -16,7 +16,7 @@
 #include "Explosion.h"
 #include "settings.h"
 
-// some conveneint aliases:
+// some convenient aliases:
 typedef std::vector<std::shared_ptr<Asteroid>> AsteroidVector;
 typedef std::vector<std::shared_ptr<Shot>> ShotVector;
 
