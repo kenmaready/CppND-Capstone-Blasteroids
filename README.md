@@ -1,6 +1,14 @@
 # CPPND: Capstone Game: Blasteroids
 
+## Project Description
+
 This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213).  It's an asteroids clone built with SDL2, and was extended from starter code provided by the course, which was inspired by the snake game in [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+
+In this Capstone Project, we could choose our own C++ application or extend a Snake game example, following principles we've learned throughout the Nanodegree Program.  I chose to extent the Snake game and adapted it to build this asteroids clone.  The purpose of the project is to demonstrate our ability to independently create applications using a wide range of C++ features. 
+
+The description below includes a description of meeting Rubric requirements including 7 specific examples in the code.
+
+At the bottom of this README, you can find instructions for compiling and running the project on your own machine.
 
 <img src="blasteroids.gif"/>
 
@@ -21,15 +29,27 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
   - Scoring is 10 points for large asteroids, 20 for medium and 40 for small
   - You have three ships, once all three have been destroyed, game is over and you may play again.
 
-## Project Description
-  In this Capstone Project, we could choose our own C++ application or extend a Snake game example, following principles we've learned throughout the Nanodegree Program. The purpose of the project is to demonstrate our ability to independently create applications using a wide range of C++ features, including the following:
+## Code Organization
+The code is contained in one directory (`/src`). 
+
+The `/src` directory includes a `main.cpp` file which is the entry point into the application and instantiates the `Game`, `Controller` and `Renderer` objects before calling the methods to begin running the game.
+
+The `/src` directory also includes header and .cpp files for each of the objects used in the game.  The `Game`, `Controller` and `Renderer` classes provide the infrasctucture for running the game, monitoring the keyboard for user input and rendering the game to the display using SDL2.  For the objects that appear within the game, I have added the `Polygon` class as a base class, and the `Asteroid`, `Ship` and `Shot` classes which are derived classes.  There are also `Announcement` and `Explosion` classes in this directory which are not derived from Polygon but which are used in the game.
+
+Finally, the `/src` directory includes a `settings.h` file with many settings used in the game (centralized here in this file for ease of making changes to these settings), and a `utilities.h` file for purposes of utility functions not specifically attached to one class, but for use among different classes (currently it only contains a function for changing a number representing degrees in a circle into a number representating radians).
+
+In addition to these code files, there is a font file located in the `/assets` directory for the Sans font which is utilized by the game.
+
+The repository also provides a `CMakeLists.txt` file with the cmake instructions to build the make file, as well as a folder `/cmake` directory which is used by these instructions to locate and use the relevant parts of certain specialized libraries upon which the game relies (e.g., SDL2_gfx and SDL2_TTF).
 
 ### Examples in the Code of Rubric requirements:
 
 ### Loops, Functions, I/O
-  The primary example of a loop in this project (as in any game) is the game loop, which circulates through a controller check, an update of all objects and relevant variables of the Game object, and finally a render function to render the updated objects to the display.  Additionally I have included loops within the Update and Render functions as the Game includes various vectors of (shared pointers to) game objects, for example the AsteroidVector which includes all currently active vectors, and the ShotVector which includes all shots.
+  **Rubric Requirement: Functions and Control Structures**
 
-  For example, game.cpp includes the following (beginning at line 99):
+  The primary example of a loop in this project (as in any game) is the game loop, which circulates through a controller check, an update of all objects and relevant variables of the Game object, and finally a render function to render the updated objects to the display.  Additionally I have relied upon a variety of control stuctured (including for and while loops) within the Update and Render functions.
+
+  For example, game.cpp includes the following for loops (beginning at line 99) to iterate through the vectors of asteroids and shots in order to call each one's Update() method:
 
   ```
   // update asteroids
@@ -75,14 +95,20 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
   ```
 
   There are many other uses of for loops throughout the program, including in the Draw() method of the Polygon class, which loops through the _vertices vector for the Polygon in order to both construct the Polygon and store their current edges in the gamespace (for purposes of the collision check).
+  
+  The Game implementation in game.cpp is organized into member functions and several support/helper fucntions used by Update() (e.g., to handle spawning ships, asteroids and shots, and to process asteroids which have been hit) in order to keep the Update() loop cleaner.  Each class, in turn, has its behavior organized into functions and helper functions supporting the main functions.
 
-  The Game implementation in game.cpp is organized into member methods and several support/helper methods used by Update() (e.g., to handle spawning ships, asteroids and shots, and to process asteroids which have been hit) in order to keep the Update() loop cleaner.
+  **Rubric Requirement: Accepts User Input and Processes the Input**
 
   Tne Controller class handles user input to control the ship, fire shots, start new games and terminate the application.  In building this, I switched to `SDL_GetKeyboardState` as the primary method of monitoring input as it allowed a little bit better handling multiple simultaneous key actions, particularly when one or more keys are being held down.
 
 ### Object Oriented Programming
 
+  **Rubric Requirement: Uses Object Oriented Programming Techniques**
+  
   The entire project is heavily OOP-structured, beginning with the Game, Controller and Renderer classes, the bases of which were provided by the template.  In building the asteroid game on top of the template, I used OOP principles to create the objects so that they could be created, updated and rendered more efficiently.
+
+  **Rubric Requirement: Classes Follow an Appropriate Inheritance Hierarchy**
 
   The Polygon class (contained in `Polygon.h` and `Polygon.cpp`) is the base class upon which the other objects in the game are built.  Each of the Asteroid (`Asteroid.h` and `Asteroid.cpp`), Shot (`Shot.h` and `Shot.cpp`) and Ship (`Ship.h` and `Ship.cpp`) classes are derived classes of Polygon, and rely heavily upon many of the member methods of the base class.  This helps avoid a lot of repetition and also allows for easy, clean and consistent coding within Game::Update() and Renderer::render() as the code in these methods can simply call the Update() and Draw() methods of these objects and leave the implementation to Polygon or an override in the derived classes.
 
@@ -90,9 +116,11 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
 
   Announcement and Explosion are stand-alone classes, as their behaviour is signficantly different than the other objects, particularly with respect to their use of SDL2 render methods, which was a big motivator for having the other classes all be related.
 
-### Memonry Management
+### Memory Management
 
   The Game class relies heavily on C++ memory management tools in order to allow for the game objects to be created and stored on the heap, while avoiding the difficult task of freeing/deleting each of the objects.  Shared pointers are used extensively for the game objects in order to achieve this purpose, while allowing the `shared_ptr` to handle removal of the objects once they go out of scope.
+
+  **Rubric Requirement: Project Uses Smart Pointers Instead of Raw Pointers**
 
   For example, all of the primary objects in the game (the ship, shots and asteroids) are created with `std::make_shared` and stored and utilized in that way.  First, a couple of aliases are declared at the top of `Game.h` in order to avoid the repetition of very long type declarations:
 
@@ -127,6 +155,8 @@ This is my Capstone Project for the [Udacity C++ Nanodegree Program](https://www
 
 ### Concurrency
 
+**Rubric Requirement: Project Uses Multithreading**
+
 In order to allow the update of all the objects in the game to run concurrently, the application uses multiple threads within the Game::Update() function (beginning at line 97 of `Game.cpp`):
 
 ```
@@ -156,6 +186,7 @@ std::vector<std::thread> updateThreads;
 
 I also tried to use similar multithreading within the Renderer::render() function so that all that work could be performed similarly, but discovered that the mutex/lock would need to be placed on the actual SDL_Render object in order to avoid issues of multiple objects trying to update the shared renderer object (`ren`) at once.  I tried with locks in the Polygon class and the Renderer object itself, but it would not work without reaching into the SDL2 code and making the SLD_Renderer itself thread-safe.
 
+
 The code uses a future object in order to allow the game to wait for a clear spot in the asteroid field before spawning a new ship.  This allows the asteroids to continue updating and moving while the new ship waits to be spawned (starting at line 293 of Game.cpp):
 
 ```
@@ -169,6 +200,8 @@ void Game::InitializeShip() {
   ship = std::make_shared<Ship>(Point(kScreenWidth/2, kScreenHeight/2));
 }
 ```
+
+**Rubric Requirement: A Mutex or Lock is Used in the Project**
 
 And while checking to see if the spawn zone is clear, the program used a std::mutex along with a std::unique_lock in order to lock the asteroids while running through them to see if they're in the spawn zone:
 
