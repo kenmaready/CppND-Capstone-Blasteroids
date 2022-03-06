@@ -261,7 +261,7 @@ A std::unique_lock was used here so that I could unlock it before the std::this_
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. `sudo apt-get install libsdl2-dev` (if you don't already ahve SDL2 locally)
+2. `sudo apt-get install libsdl2-dev` (if you don't already have SDL2 locally)
 3. `sudo apt install libsdl2-gfx-dev` (if you don't already have SDL2_gfx locally)
 4. `sudo apt install libsdl2-ttf-dev` (if you don't already have SDL2_TTF locally)
 5. Make a build directory in the top level directory & cd into it: `mkdir build && cd build`
